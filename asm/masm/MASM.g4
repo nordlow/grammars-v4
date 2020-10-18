@@ -1,7 +1,7 @@
 
-/** 
+/**
 This grammar is generated with antlrworks in order to parse an asm source
-code.First of all the lexical rules established here do not replace the ones 
+code.First of all the lexical rules established here do not replace the ones
 generated in JFlex we used in EditorASM to color the tokens, instead they are used
 to provide the necessary tokens for the parser.
 **/
@@ -10,7 +10,7 @@ to provide the necessary tokens for the parser.
     Ported to Antlr4 by Tom Everett <tom@khubla.com>
 */
 grammar MASM;
-@ header{ 
+@header{
  	 package com.Ostermiller.Syntax;
  	 }
 compilationUnit
