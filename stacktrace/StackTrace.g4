@@ -1,5 +1,5 @@
 
-/** A Java stacktrace text grammar for ANTLR v3 
+/** A Java stacktrace text grammar for ANTLR v3
  *  see http://java.sun.com/javase/6/docs/api/java/lang/Throwable.html
  *
  *  Version 1.0 -- initial release March 9, 2008 (requires 3.0 or higher)
@@ -76,8 +76,9 @@ identifier
    : JavaWord
    ;
 
+// https://stackoverflow.com/questions/64477446/meaning-of-colon-inside-parenthesises/64477817#64477817
 message
-   : COLON (: .)*?
+   : COLON .*?
    ;
 
 
