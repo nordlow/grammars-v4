@@ -26,7 +26,7 @@ THE SOFTWARE.
 grammar Sexpr;
 
 options {
-	language=ActionScript;
+    language=ActionScript;
    output=AST;
    ASTLabelType=CommonTree;
 }
@@ -42,41 +42,41 @@ DOT;
 
 
 sexpr
-	: item* EOF
-	;
+    : item* EOF
+    ;
 item
-	: atom
-	| (list)=> list
-	| LPAREN item DOT item RPAREN
-	;
+    : atom
+    | (list)=> list
+    | LPAREN item DOT item RPAREN
+    ;
 list
-	: LPAREN item* RPAREN
-	;
+    : LPAREN item* RPAREN
+    ;
 atom
-	: STRING | SYMBOL | NUMBER | DOT
-	;
-	
+    : STRING | SYMBOL | NUMBER | DOT
+    ;
+
 STRING
-	:'"' ( '\\' . | ~('\\'|'"') )* '"'
-	;
+    :'"' ( '\\' . | ~('\\'|'"') )* '"'
+    ;
 WHITESPACE
-	: (' ' | '\n' | '\t' | '\r')+ 
-		{skip();}
-	;
+    : (' ' | '\n' | '\t' | '\r')+
+        {skip();}
+    ;
 NUMBER
-	: ('+' | '-')? (DIGIT)+ ('.' (DIGIT)+)?
-	;
+    : ('+' | '-')? (DIGIT)+ ('.' (DIGIT)+)?
+    ;
 SYMBOL
-	: SYMBOL_START (SYMBOL_START | DIGIT)*  {if ($text == '.')  $type = DOT;}
-	;
+    : SYMBOL_START (SYMBOL_START | DIGIT)*  {if ($text == '.')  $type = DOT;}
+    ;
 
 fragment
-SYMBOL_START 
-	: ('a'..'z') | ('A'..'Z') 
-	| '+' | '-' | '*' | '/' 
-	| '.'
-	;
+SYMBOL_START
+    : ('a'..'z') | ('A'..'Z')
+    | '+' | '-' | '*' | '/'
+    | '.'
+    ;
 fragment
 DIGIT
-	: ('0'..'9')
-	;
+    : ('0'..'9')
+    ;
