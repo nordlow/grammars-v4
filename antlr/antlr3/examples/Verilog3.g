@@ -56,7 +56,7 @@ port_reference :
         name_of_variable
         ;
 
-module_item : 
+module_item :
 	 // ambiguity between net_declaration and continuous_assign,
 	 // but parser gets it right: keyword chosen over IDENTIFIER.
         parameter_declaration |
@@ -248,7 +248,7 @@ tf_declaration :
         time_declaration |
         integer_declaration |
         real_declaration |
-        event_declaration 
+        event_declaration
         ;
 
 
@@ -289,7 +289,7 @@ net_declaration :
         ;
 
 net_type :
-        'wire' | 
+        'wire' |
         'tri' |
         'tri1' |
         'supply0' |
@@ -433,7 +433,7 @@ gate_type :
         ;
 
 delay :
-        POUND NUMBER | 
+        POUND NUMBER |
 	POUND identifier |
         POUND LPAREN mintypmax_expression
 	        ( COMMA mintypmax_expression
@@ -545,7 +545,7 @@ non_blocking_assignment :
 	  // so suppress warning.
 conditional_statement :
         'if' LPAREN expression RPAREN statement_or_null
-        ( : 'else' statement_or_null)?
+        ('else' statement_or_null)?
         ;
 
 case_statement :
@@ -604,7 +604,7 @@ block_declaration :
         integer_declaration |
         real_declaration |
         time_declaration |
-        event_declaration 
+        event_declaration
         ;
 
 task_enable :
@@ -700,7 +700,7 @@ list_of_path_delay_expressions :
 	  ( COMMA path_delay_expression
 	    ( COMMA path_delay_expression COMMA
               path_delay_expression COMMA path_delay_expression )? )?
-        ; 
+        ;
 
 path_delay_expression :
         mintypmax_expression
@@ -716,7 +716,7 @@ system_timing_check :
         '$width' LPAREN controlled_timing_check_event COMMA
             timing_check_limit ( COMMA expression COMMA notify_register )?
 	    RPAREN SEMI |
-        '$skew' LPAREN timing_check_event COMMA timing_check_event COMMA 
+        '$skew' LPAREN timing_check_event COMMA timing_check_event COMMA
             timing_check_limit ( COMMA notify_register )? RPAREN SEMI |
         '$recovery' LPAREN controlled_timing_check_event COMMA
             timing_check_event COMMA timing_check_limit
@@ -762,7 +762,7 @@ edge_descriptor :
 
 timing_check_condition :
         scalar_timing_check_condition
-        ; 
+        ;
 scalar_timing_check_condition :
         expression
         ;
@@ -901,7 +901,7 @@ unary_operator :
         BOR    |
         RNOR   |
         BXOR   |
-        BXNOR 
+        BXNOR
         ;
 
 binary_operator :
@@ -925,7 +925,7 @@ binary_operator :
         BXOR        |
         BXNOR       |
         SR          |
-        SL 
+        SL
         ;
 
 
@@ -1159,7 +1159,7 @@ WS
 	:	SPACE_OR_TAB+
 		{$channel=HIDDEN;}
 	;
-    
+
 ML_COMMENT
     :   '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
     ;

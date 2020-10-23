@@ -351,7 +351,7 @@ block_statement
   : label_colon BLOCK ( LPAREN expression RPAREN )? ( IS )?
     block_header
     block_declarative_part BEGIN
-    block_statement_part 
+    block_statement_part
     END BLOCK ( identifier )? SEMI
   ;
 
@@ -693,11 +693,11 @@ exit_statement
 // NOTE that NAND/NOR are in (...)* now (used to be in (...)?).
 // (21.1.2004, e.f.)
 expression
-  : relation ( : logical_operator relation )*
+  : relation (logical_operator relation )*
   ;
 
 factor
-  : primary ( : DOUBLESTAR primary )?
+  : primary (DOUBLESTAR primary )?
   | ABS primary
   | NOT primary
   ;
@@ -725,7 +725,7 @@ formal_parameter_list
 
 formal_part
   : identifier
-   | identifier LPAREN explicit_range  RPAREN 
+   | identifier LPAREN explicit_range  RPAREN
   ;
 
 free_quantity_declaration
@@ -792,7 +792,7 @@ identifier_list
 if_statement
   : ( label_colon )? IF condition THEN
     sequence_of_statements
-    ( ELSIF condition THEN sequence_of_statements )* 
+    ( ELSIF condition THEN sequence_of_statements )*
     ( ELSE sequence_of_statements )?
     END IF ( identifier )? SEMI
   ;
@@ -844,11 +844,11 @@ interface_file_declaration
   : FILE identifier_list COLON subtype_indication
   ;
 
-interface_signal_list 
+interface_signal_list
   : interface_signal_declaration ( SEMI interface_signal_declaration )*
   ;
 
-interface_port_list 
+interface_port_list
   : interface_port_declaration ( SEMI interface_port_declaration )*
   ;
 
@@ -925,7 +925,7 @@ logical_operator
 loop_statement
   : ( label_colon )? ( iteration_scheme )?
     LOOP
-    sequence_of_statements 
+    sequence_of_statements
     END LOOP ( identifier )? SEMI
   ;
 
@@ -1084,12 +1084,12 @@ parameter_specification
   ;
 
 physical_literal
-  : abstract_literal (: identifier)
+  : abstract_literal identifier
   ;
 
 physical_type_definition
   : range_constraint UNITS base_unit_declaration
-    ( secondary_unit_declaration )* 
+    ( secondary_unit_declaration )*
     END UNITS ( identifier )?
   ;
 
@@ -1176,7 +1176,7 @@ process_statement
     ( LPAREN sensitivity_list RPAREN )? ( IS )?
     process_declarative_part
     BEGIN
-    process_statement_part 
+    process_statement_part
     END ( POSTPONED )? PROCESS ( identifier )? SEMI
   ;
 
@@ -1229,7 +1229,7 @@ record_type_definition
 
 relation
   : shift_expression
-    ( : relational_operator shift_expression )?
+    ( relational_operator shift_expression )?
   ;
 
 relational_operator
@@ -1307,7 +1307,7 @@ sequential_statement
 
 shift_expression
   : simple_expression
-    ( : shift_operator simple_expression )?
+    ( shift_operator simple_expression )?
   ;
 
 shift_operator
@@ -1348,7 +1348,7 @@ signature
 // `a op -b' - use `a op (-b)' instead).
 // (3.2.2004, e.f.)
 simple_expression
-  : ( PLUS | MINUS )? term ( : adding_operator term )*
+  : ( PLUS | MINUS )? term ( adding_operator term )*
   ;
 
 simple_simultaneous_statement
@@ -1362,7 +1362,7 @@ simultaneous_alternative
 
 simultaneous_case_statement
   : ( label_colon )? CASE expression USE
-    ( simultaneous_alternative )+ 
+    ( simultaneous_alternative )+
     END CASE ( identifier )? SEMI
   ;
 
@@ -1377,7 +1377,7 @@ simultaneous_if_statement
 simultaneous_procedural_statement
   : ( label_colon )? PROCEDURAL ( IS )?
     procedural_declarative_part BEGIN
-    procedural_statement_part 
+    procedural_statement_part
     END PROCEDURAL ( identifier )? SEMI
   ;
 
@@ -1411,7 +1411,7 @@ subnature_declaration
   ;
 
 subnature_indication
-  : name ( index_constraint )? 
+  : name ( index_constraint )?
     ( TOLERANCE expression ACROSS expression THROUGH )?
   ;
 
@@ -1494,7 +1494,7 @@ target
   ;
 
 term
-  : factor ( : multiplying_operator factor )*
+  : factor ( multiplying_operator factor )*
   ;
 
 terminal_aspect
@@ -1552,14 +1552,14 @@ variable_declaration
   ;
 
 wait_statement
-  : ( label_colon )? WAIT ( sensitivity_clause )? 
+  : ( label_colon )? WAIT ( sensitivity_clause )?
     ( condition_clause )? ( timeout_clause )? SEMI
   ;
 
 waveform
   : waveform_element ( COMMA waveform_element )*
   | UNAFFECTED
-  ;   
+  ;
 
 waveform_element
   : expression ( AFTER expression )?
@@ -1600,7 +1600,7 @@ REAL_LITERAL
 BASIC_IDENTIFIER
    :   LETTER ( '_' ( LETTER | DIGIT ) | LETTER | DIGIT )*
    ;
-   
+
 EXTENDED_IDENTIFIER
   : '\\' ( 'a'..'z' | '0'..'9' | '&' | '\'' | '(' | ')'
     | '+' | ',' | '-' | '.' | '/' | ':' | ';' | '<' | '=' | '>' | '|'
@@ -1608,31 +1608,31 @@ EXTENDED_IDENTIFIER
     | '#' | '[' | ']' | '_' )+ '\\'
   ;
 
-LETTER	
+LETTER
   :  'a'..'z' | 'A'..'Z'
   ;
 
 COMMENT
-  : '--' ( ~'\n' )* 
+  : '--' ( ~'\n' )*
   -> skip
   ;
 
 TAB
-  : ( '\t' )+ -> skip 
+  : ( '\t' )+ -> skip
   ;
 
 SPACE
-  : ( ' ' )+ -> skip 
+  : ( ' ' )+ -> skip
   ;
 
 NEWLINE
-  : '\n' -> skip 
+  : '\n' -> skip
   ;
 
 CR
-  : '\r' -> skip 
+  : '\r' -> skip
   ;
-  
+
 CHARACTER_LITERAL
    : APOSTROPHE . APOSTROPHE
    ;
@@ -1685,7 +1685,7 @@ EQ            : '='   ;
 BAR           : '|'   ;
 DOT           : '.'   ;
 BACKSLASH     : '\\'  ;
-  
+
 
 EXPONENT
   :  ('E'|'e') ( '+' | '-' )? INTEGER
