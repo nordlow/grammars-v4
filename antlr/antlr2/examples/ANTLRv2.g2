@@ -850,14 +850,13 @@ ML_COMMENT :
                         must be ambiguous.  I'm shutting this warning off.
                  */
                 options {
-                        greedy=false;  // make it exit upon "*/"
                         generateAmbigWarnings=false; // shut off newline errors
                 }
         :       '\r' '\n'       {newline();}
         |       '\r'            {newline();}
         |       '\n'            {newline();}
         |       ~('\n'|'\r')
-        )*
+        )*?                     // non-greedy, make it exit upon "*/"
         "*/"
         ;
 
@@ -1000,10 +999,6 @@ protected
 NESTED_ACTION :
         '{'
         (
-                options {
-                        greedy = false; // exit upon '}'
-                }
-        :
                 (
                         options {
                                 generateAmbigWarnings = false; // shut off newline warning
@@ -1017,7 +1012,7 @@ NESTED_ACTION :
         |       COMMENT
         |       STRING_LITERAL
         |       .
-        )*
+        )*?                     // non-greedy, exit upon '}'
         '}'
    ;
 
@@ -1047,14 +1042,7 @@ RULE_REF
 
 protected
 WS_LOOP
-        :       (       // grab as much WS as you can
-                        options {
-                                greedy=true;
-                        }
-                :
-                        WS
-                |       COMMENT
-                )*
+        :       (WS | COMMENT)* // greedy, grab as much whitespace as possible
         ;
 
 protected

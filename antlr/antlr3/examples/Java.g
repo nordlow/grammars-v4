@@ -28,101 +28,101 @@
 
 /*
  * This file is modified by Yang Jiang (yang.jiang.z@gmail.com), taken from the original
- * java grammar in www.antlr.org, with the goal to provide a standard ANTLR grammar 
- * for java, as well as an implementation to construct the same AST trees as javac does.  
- * 
+ * java grammar in www.antlr.org, with the goal to provide a standard ANTLR grammar
+ * for java, as well as an implementation to construct the same AST trees as javac does.
+ *
  * The major changes of this version as compared to the original version include:
- * 1) Top level rules are changed to include all of their sub-components. 
+ * 1) Top level rules are changed to include all of their sub-components.
  *    For example, the rule
- * 
+ *
  *      classOrInterfaceDeclaration
  *          :   classOrInterfaceModifiers (classDeclaration | interfaceDeclaration)
  *      ;
  *
  *    is changed to
- * 
+ *
  *      classOrInterfaceDeclaration
  *          :   classDeclaration | interfaceDeclaration
  *      ;
- *    
- *    with classOrInterfaceModifiers been moved inside classDeclaration and 
+ *
+ *    with classOrInterfaceModifiers been moved inside classDeclaration and
  *    interfaceDeclaration.
- * 
- * 2) The original version is not quite clear on certain rules like memberDecl, 
+ *
+ * 2) The original version is not quite clear on certain rules like memberDecl,
  *    where it mixed the styles of listing of top level rules and listing of sub rules.
  *
  *    memberDecl
  *      :   genericMethodOrConstructorDecl
  *      |   memberDeclaration
- *      |   'void' Identifier voidMethodDeclaratorRest   
+ *      |   'void' Identifier voidMethodDeclaratorRest
  *      |   Identifier constructorDeclaratorRest
  *      |   interfaceDeclaration
  *      |   classDeclaration
  *      ;
  *
- *    This is changed to a 
+ *    This is changed to a
  *
  *    memberDecl
- *      :   fieldDeclaration        
+ *      :   fieldDeclaration
  *      |   methodDeclaration
  *      |   classDeclaration
  *      |   interfaceDeclaration
  *      ;
  *    by folding similar rules into single rule.
  *
- * 3) Some syntactical predicates are added for efficiency, although this is not necessary 
+ * 3) Some syntactical predicates are added for efficiency, although this is not necessary
  *    for correctness.
  *
  * 4) Lexer part is rewritten completely to construct tokens needed for the parser.
- * 
+ *
  * 5) This grammar adds more source level support
  *
  *
  * This grammar also adds bug fixes.
  *
- * 1) Adding typeArguments to superSuffix to alHexSignificandlow input like 
+ * 1) Adding typeArguments to superSuffix to alHexSignificandlow input like
  *      super.<TYPE>method()
- * 
- * 2) Adding typeArguments to innerCreator to allow input like 
+ *
+ * 2) Adding typeArguments to innerCreator to allow input like
  *      new Type1<String, Integer>().new Type2<String>()
- * 
- * 3) conditionalExpression is changed to 
+ *
+ * 3) conditionalExpression is changed to
  *    conditionalExpression
  *      :   conditionalOrExpression ( '?' expression ':' conditionalExpression )?
  *      ;
- *    to accept input like 
+ *    to accept input like
  *      true?1:2=3
- *    
- *    Note: note this is by no means a valid input, by the grammar should be able to parse 
- *    this as 
- *            (true?1:2)=3  
- *    rather than    
+ *
+ *    Note: note this is by no means a valid input, by the grammar should be able to parse
+ *    this as
+ *            (true?1:2)=3
+ *    rather than
  *            true?1:(2=3)
  *
- *  
+ *
  *  Know problems:
- *    Won't pass input containing unicode sequence like this 
+ *    Won't pass input containing unicode sequence like this
  *      char c = '\uffff'
  *      String s = "\uffff";
- *    Because Antlr does not treat '\uffff' as an valid char. This will be fixed in the next Antlr 
+ *    Because Antlr does not treat '\uffff' as an valid char. This will be fixed in the next Antlr
  *    release. [Fixed in Antlr-3.1.1]
- * 
+ *
  *  Things to do:
  *    More effort to make this grammar faster.
  *    Error reporting/recovering.
- *  
- *  
- *  NOTE: If you try to compile this file from command line and Antlr gives an exception 
- *    like error message while compiling, add option 
+ *
+ *
+ *  NOTE: If you try to compile this file from command line and Antlr gives an exception
+ *    like error message while compiling, add option
  *    -Xconversiontimeout 100000
- *    to the command line.  
+ *    to the command line.
  *    If it still doesn't work or the compilation process
  *    takes too long, try to comment out the following two lines:
  *    |    {isValidSurrogateIdentifierStart((char)input.LT(1), (char)input.LT(2))}?=>('\ud800'..'\udbff') ('\udc00'..'\udfff')
  *    |    {isValidSurrogateIdentifierPart((char)input.LT(1), (char)input.LT(2))}?=>('\ud800'..'\udbff') ('\udc00'..'\udfff')
- *   
  *
- *  Below are comments found in the original version. 
+ *
+ *  Below are comments found in the original version.
  */
 
 
@@ -190,7 +190,7 @@
  *          'Class<Byte' in the cast expression as a less than expression, then failing
  *          on the '>'.
  *      Changed createdName to use typeArguments instead of nonWildcardTypeArguments.
- *         
+ *
  *      Changed the 'this' alternative in primary to allow 'identifierSuffix' rather than
  *          just 'arguments'.  The case it couldn't handle was a call to an explicit
  *          generic method invocation (e.g. this.<E>doSomething()).  Using identifierSuffix
@@ -262,25 +262,25 @@
  *      Character.isJavaIdentifierStart(int) returns true."  A "Java
  *      letter-or-digit is a character for which the method
  *      Character.isJavaIdentifierPart(int) returns true."
- */   
- 
- 
- /* 
+ */
+
+
+ /*
     This is a merged file, containing two versions of the Java.g grammar.
     To extract a version from the file, run the ver.jar with the command provided below.
-    
+
     Version 1 - tree building version, with all source level support, error recovery etc.
                 This is the version for compiler grammar workspace.
                 This version can be extracted by invoking:
                 java -cp ver.jar Main 1 true true true true true Java.g
-                             
-    Version 2 - clean version, with no source leve support, no error recovery, no predicts, 
+
+    Version 2 - clean version, with no source leve support, no error recovery, no predicts,
                 assumes 1.6 level, works in Antlrworks.
                 This is the version for Alex.
                 This version can be extracted by invoking:
-                java -cp ver.jar Main 2 false false false false false Java.g 
+                java -cp ver.jar Main 2 false false false false false Java.g
 */
-  
+
 grammar Java;
 
 
@@ -292,8 +292,8 @@ options {
 /********************************************************************************************
                           Parser section
 *********************************************************************************************/
-           
-compilationUnit 
+
+compilationUnit
     :   (   (annotations
             )?
             packageDeclaration
@@ -304,18 +304,18 @@ compilationUnit
         )*
     ;
 
-packageDeclaration 
+packageDeclaration
     :   'package' qualifiedName
         ';'
     ;
 
-importDeclaration  
-    :   'import' 
+importDeclaration
+    :   'import'
         ('static'
         )?
         IDENTIFIER '.' '*'
-        ';'       
-    |   'import' 
+        ';'
+    |   'import'
         ('static'
         )?
         IDENTIFIER
@@ -326,24 +326,24 @@ importDeclaration
         ';'
     ;
 
-qualifiedImportName 
+qualifiedImportName
     :   IDENTIFIER
         ('.' IDENTIFIER
         )*
     ;
 
-typeDeclaration 
+typeDeclaration
     :   classOrInterfaceDeclaration
     |   ';'
     ;
 
-classOrInterfaceDeclaration 
+classOrInterfaceDeclaration
     :    classDeclaration
     |   interfaceDeclaration
     ;
-    
-  
-modifiers  
+
+
+modifiers
     :
     (    annotation
     |   'public'
@@ -361,31 +361,31 @@ modifiers
     ;
 
 
-variableModifiers 
+variableModifiers
     :   (   'final'
         |   annotation
         )*
     ;
-    
 
-classDeclaration 
+
+classDeclaration
     :   normalClassDeclaration
     |   enumDeclaration
     ;
 
-normalClassDeclaration 
+normalClassDeclaration
     :   modifiers  'class' IDENTIFIER
         (typeParameters
         )?
         ('extends' type
         )?
         ('implements' typeList
-        )?            
+        )?
         classBody
     ;
 
 
-typeParameters 
+typeParameters
     :   '<'
             typeParameter
             (',' typeParameter
@@ -393,42 +393,42 @@ typeParameters
         '>'
     ;
 
-typeParameter 
+typeParameter
     :   IDENTIFIER
         ('extends' typeBound
         )?
     ;
 
 
-typeBound 
+typeBound
     :   type
         ('&' type
         )*
     ;
 
 
-enumDeclaration 
-    :   modifiers 
+enumDeclaration
+    :   modifiers
         ('enum'
-        ) 
+        )
         IDENTIFIER
         ('implements' typeList
         )?
         enumBody
     ;
-    
 
-enumBody 
+
+enumBody
     :   '{'
         (enumConstants
-        )? 
-        ','? 
+        )?
+        ','?
         (enumBodyDeclarations
-        )? 
+        )?
         '}'
     ;
 
-enumConstants 
+enumConstants
     :   enumConstant
         (',' enumConstant
         )*
@@ -438,7 +438,7 @@ enumConstants
  * NOTE: here differs from the javac grammar, missing TypeArguments.
  * EnumeratorDeclaration = AnnotationsOpt [TypeArguments] IDENTIFIER [ Arguments ] [ "{" ClassBody "}" ]
  */
-enumConstant 
+enumConstant
     :   (annotations
         )?
         IDENTIFIER
@@ -450,18 +450,18 @@ enumConstant
         an anonymous class, where constructor isn't allowed, have to add this check*/
     ;
 
-enumBodyDeclarations 
-    :   ';' 
+enumBodyDeclarations
+    :   ';'
         (classBodyDeclaration
         )*
     ;
 
-interfaceDeclaration 
+interfaceDeclaration
     :   normalInterfaceDeclaration
     |   annotationTypeDeclaration
     ;
-    
-normalInterfaceDeclaration 
+
+normalInterfaceDeclaration
     :   modifiers 'interface' IDENTIFIER
         (typeParameters
         )?
@@ -470,35 +470,35 @@ normalInterfaceDeclaration
         interfaceBody
     ;
 
-typeList 
+typeList
     :   type
         (',' type
         )*
     ;
 
-classBody 
-    :   '{' 
+classBody
+    :   '{'
         (classBodyDeclaration
-        )* 
+        )*
         '}'
     ;
 
-interfaceBody 
-    :   '{' 
+interfaceBody
+    :   '{'
         (interfaceBodyDeclaration
-        )* 
+        )*
         '}'
     ;
 
-classBodyDeclaration 
+classBodyDeclaration
     :   ';'
     |   ('static'
-        )? 
+        )?
         block
     |   memberDecl
     ;
 
-memberDecl 
+memberDecl
     :    fieldDeclaration
     |    methodDeclaration
     |    classDeclaration
@@ -506,7 +506,7 @@ memberDecl
     ;
 
 
-methodDeclaration 
+methodDeclaration
     :
         /* For constructor, return type is null, name is 'init' */
          modifiers
@@ -516,7 +516,7 @@ methodDeclaration
         formalParameters
         ('throws' qualifiedNameList
         )?
-        '{' 
+        '{'
         (explicitConstructorInvocation
         )?
         (blockStatement
@@ -533,15 +533,15 @@ methodDeclaration
         ('[' ']'
         )*
         ('throws' qualifiedNameList
-        )?            
-        (        
+        )?
+        (
             block
-        |   ';' 
+        |   ';'
         )
     ;
 
 
-fieldDeclaration 
+fieldDeclaration
     :   modifiers
         type
         variableDeclarator
@@ -550,7 +550,7 @@ fieldDeclaration
         ';'
     ;
 
-variableDeclarator 
+variableDeclarator
     :   IDENTIFIER
         ('[' ']'
         )*
@@ -561,7 +561,7 @@ variableDeclarator
 /**
  *TODO: add predicates
  */
-interfaceBodyDeclaration 
+interfaceBodyDeclaration
     :
         interfaceFieldDeclaration
     |   interfaceMethodDeclaration
@@ -570,7 +570,7 @@ interfaceBodyDeclaration
     |   ';'
     ;
 
-interfaceMethodDeclaration 
+interfaceMethodDeclaration
     :   modifiers
         (typeParameters
         )?
@@ -590,7 +590,7 @@ interfaceMethodDeclaration
  * an initializer, while an interface field does, or judge by the returned value.
  * But this gives better diagnostic message, or antlr won't predict this rule.
  */
-interfaceFieldDeclaration 
+interfaceFieldDeclaration
     :   modifiers type variableDeclarator
         (',' variableDeclarator
         )*
@@ -598,7 +598,7 @@ interfaceFieldDeclaration
     ;
 
 
-type 
+type
     :   classOrInterfaceType
         ('[' ']'
         )*
@@ -608,7 +608,7 @@ type
     ;
 
 
-classOrInterfaceType 
+classOrInterfaceType
     :   IDENTIFIER
         (typeArguments
         )?
@@ -618,7 +618,7 @@ classOrInterfaceType
         )*
     ;
 
-primitiveType  
+primitiveType
     :   'boolean'
     |   'char'
     |   'byte'
@@ -629,14 +629,14 @@ primitiveType
     |   'double'
     ;
 
-typeArguments 
+typeArguments
     :   '<' typeArgument
         (',' typeArgument
-        )* 
+        )*
         '>'
     ;
 
-typeArgument 
+typeArgument
     :   type
     |   '?'
         (
@@ -647,44 +647,44 @@ typeArgument
         )?
     ;
 
-qualifiedNameList 
+qualifiedNameList
     :   qualifiedName
         (',' qualifiedName
         )*
     ;
 
-formalParameters 
+formalParameters
     :   '('
         (formalParameterDecls
-        )? 
+        )?
         ')'
     ;
 
-formalParameterDecls 
+formalParameterDecls
     :   ellipsisParameterDecl
     |   normalParameterDecl
         (',' normalParameterDecl
         )*
     |   (normalParameterDecl
         ','
-        )+ 
+        )+
         ellipsisParameterDecl
     ;
 
-normalParameterDecl 
+normalParameterDecl
     :   variableModifiers type IDENTIFIER
         ('[' ']'
         )*
     ;
 
-ellipsisParameterDecl 
+ellipsisParameterDecl
     :   variableModifiers
         type  '...'
         IDENTIFIER
     ;
 
 
-explicitConstructorInvocation 
+explicitConstructorInvocation
     :   (nonWildcardTypeArguments
         )?     //NOTE: the position of Identifier 'super' is set to the type args position here
         ('this'
@@ -700,48 +700,48 @@ explicitConstructorInvocation
         arguments ';'
     ;
 
-qualifiedName 
+qualifiedName
     :   IDENTIFIER
         ('.' IDENTIFIER
         )*
     ;
 
-annotations 
+annotations
     :   (annotation
         )+
     ;
 
 /**
- *  Using an annotation. 
+ *  Using an annotation.
  * '@' is flaged in modifier
  */
-annotation 
+annotation
     :   '@' qualifiedName
-        (   '('   
+        (   '('
                   (   elementValuePairs
                   |   elementValue
-                  )? 
-            ')' 
+                  )?
+            ')'
         )?
     ;
 
-elementValuePairs 
+elementValuePairs
     :   elementValuePair
         (',' elementValuePair
         )*
     ;
 
-elementValuePair 
+elementValuePair
     :   IDENTIFIER '=' elementValue
     ;
 
-elementValue 
+elementValue
     :   conditionalExpression
     |   annotation
     |   elementValueArrayInitializer
     ;
 
-elementValueArrayInitializer 
+elementValueArrayInitializer
     :   '{'
         (elementValue
             (',' elementValue
@@ -753,7 +753,7 @@ elementValueArrayInitializer
 /**
  * Annotation declaration.
  */
-annotationTypeDeclaration 
+annotationTypeDeclaration
     :   modifiers '@'
         'interface'
         IDENTIFIER
@@ -761,17 +761,17 @@ annotationTypeDeclaration
     ;
 
 
-annotationTypeBody 
-    :   '{' 
+annotationTypeBody
+    :   '{'
         (annotationTypeElementDeclaration
-        )* 
+        )*
         '}'
     ;
 
 /**
  * NOTE: here use interfaceFieldDeclaration for field declared inside annotation. they are sytactically the same.
  */
-annotationTypeElementDeclaration 
+annotationTypeElementDeclaration
     :   annotationMethodDeclaration
     |   interfaceFieldDeclaration
     |   normalClassDeclaration
@@ -781,14 +781,14 @@ annotationTypeElementDeclaration
     |   ';'
     ;
 
-annotationMethodDeclaration 
+annotationMethodDeclaration
     :   modifiers type IDENTIFIER
         '(' ')' ('default' elementValue
                 )?
         ';'
         ;
 
-block 
+block
     :   '{'
         (blockStatement
         )*
@@ -807,7 +807,7 @@ staticBlock returns [JCBlock tree]
             // construct a dummy static modifiers for end position
             pu.storeEnd(T.at(pos).Modifiers(Flags.STATIC,  com.sun.tools.javac.util.List.<JCAnnotation>nil()),$st);
         }
-    :   st_1='static' '{' 
+    :   st_1='static' '{'
         (blockStatement
             {
                 if ($blockStatement.tree == null) {
@@ -819,33 +819,33 @@ staticBlock returns [JCBlock tree]
         )* '}'
     ;
 */
-blockStatement 
+blockStatement
     :   localVariableDeclarationStatement
     |   classOrInterfaceDeclaration
     |   statement
     ;
 
 
-localVariableDeclarationStatement 
+localVariableDeclarationStatement
     :   localVariableDeclaration
         ';'
     ;
 
-localVariableDeclaration 
+localVariableDeclaration
     :   variableModifiers type
         variableDeclarator
         (',' variableDeclarator
         )*
     ;
 
-statement 
+statement
     :   block
-            
+
     |   ('assert'
         )
         expression (':' expression)? ';'
-    |   'assert'  expression (':' expression)? ';'            
-    |   'if' parExpression statement ('else' statement)?          
+    |   'assert'  expression (':' expression)? ';'
+    |   'if' parExpression statement ('else' statement)?
     |   forstatement
     |   'while' parExpression statement
     |   'do' statement 'while' parExpression ';'
@@ -860,30 +860,30 @@ statement
     |   'continue'
             (IDENTIFIER
             )? ';'
-    |   expression  ';'     
+    |   expression  ';'
     |   IDENTIFIER ':' statement
     |   ';'
 
     ;
 
-switchBlockStatementGroups 
+switchBlockStatementGroups
     :   (switchBlockStatementGroup )*
     ;
 
-switchBlockStatementGroup 
+switchBlockStatementGroup
     :
         switchLabel
         (blockStatement
         )*
     ;
 
-switchLabel 
+switchLabel
     :   'case' expression ':'
     |   'default' ':'
     ;
 
 
-trystatement 
+trystatement
     :   'try' block
         (   catches 'finally' block
         |   catches
@@ -891,63 +891,63 @@ trystatement
         )
      ;
 
-catches 
+catches
     :   catchClause
         (catchClause
         )*
     ;
 
-catchClause 
+catchClause
     :   'catch' '(' formalParameter
-        ')' block 
+        ')' block
     ;
 
-formalParameter 
+formalParameter
     :   variableModifiers type IDENTIFIER
         ('[' ']'
         )*
     ;
 
-forstatement 
-    :   
+forstatement
+    :
         // enhanced for loop
-        'for' '(' variableModifiers type IDENTIFIER ':' 
+        'for' '(' variableModifiers type IDENTIFIER ':'
         expression ')' statement
-            
+
         // normal for loop
-    |   'for' '(' 
+    |   'for' '('
                 (forInit
-                )? ';' 
+                )? ';'
                 (expression
-                )? ';' 
+                )? ';'
                 (expressionList
                 )? ')' statement
     ;
 
-forInit 
+forInit
     :   localVariableDeclaration
     |   expressionList
     ;
 
-parExpression 
+parExpression
     :   '(' expression ')'
     ;
 
-expressionList 
+expressionList
     :   expression
         (',' expression
         )*
     ;
 
 
-expression 
+expression
     :   conditionalExpression
         (assignmentOperator expression
         )?
     ;
 
 
-assignmentOperator 
+assignmentOperator
     :   '='
     |   '+='
     |   '-='
@@ -963,45 +963,45 @@ assignmentOperator
     ;
 
 
-conditionalExpression 
+conditionalExpression
     :   conditionalOrExpression
         ('?' expression ':' conditionalExpression
         )?
     ;
 
-conditionalOrExpression 
+conditionalOrExpression
     :   conditionalAndExpression
         ('||' conditionalAndExpression
         )*
     ;
 
-conditionalAndExpression 
+conditionalAndExpression
     :   inclusiveOrExpression
         ('&&' inclusiveOrExpression
         )*
     ;
 
-inclusiveOrExpression 
+inclusiveOrExpression
     :   exclusiveOrExpression
         ('|' exclusiveOrExpression
         )*
     ;
 
-exclusiveOrExpression 
+exclusiveOrExpression
     :   andExpression
         ('^' andExpression
         )*
     ;
 
-andExpression 
+andExpression
     :   equalityExpression
         ('&' equalityExpression
         )*
     ;
 
-equalityExpression 
+equalityExpression
     :   instanceOfExpression
-        (   
+        (
             (   '=='
             |   '!='
             )
@@ -1009,42 +1009,42 @@ equalityExpression
         )*
     ;
 
-instanceOfExpression 
+instanceOfExpression
     :   relationalExpression
         ('instanceof' type
         )?
     ;
 
-relationalExpression 
+relationalExpression
     :   shiftExpression
         (relationalOp shiftExpression
         )*
     ;
 
-relationalOp 
+relationalOp
     :    '<' '='
     |    '>' '='
     |   '<'
     |   '>'
     ;
 
-shiftExpression 
+shiftExpression
     :   additiveExpression
         (shiftOp additiveExpression
         )*
     ;
 
 
-shiftOp 
+shiftOp
     :    '<' '<'
     |    '>' '>' '>'
     |    '>' '>'
     ;
 
 
-additiveExpression 
+additiveExpression
     :   multiplicativeExpression
-        (   
+        (
             (   '+'
             |   '-'
             )
@@ -1052,10 +1052,10 @@ additiveExpression
          )*
     ;
 
-multiplicativeExpression 
+multiplicativeExpression
     :
         unaryExpression
-        (   
+        (
             (   '*'
             |   '/'
             |   '%'
@@ -1068,7 +1068,7 @@ multiplicativeExpression
  * NOTE: for '+' and '-', if the next token is int or long interal, then it's not a unary expression.
  *       it's a literal with signed value. INTLTERAL AND LONG LITERAL are added here for this.
  */
-unaryExpression 
+unaryExpression
     :   '+'  unaryExpression
     |   '-' unaryExpression
     |   '++' unaryExpression
@@ -1076,7 +1076,7 @@ unaryExpression
     |   unaryExpressionNotPlusMinus
     ;
 
-unaryExpressionNotPlusMinus 
+unaryExpressionNotPlusMinus
     :   '~' unaryExpression
     |   '!' unaryExpression
     |   castExpression
@@ -1088,7 +1088,7 @@ unaryExpressionNotPlusMinus
         )?
     ;
 
-castExpression 
+castExpression
     :   '(' primitiveType ')' unaryExpression
     |   '(' type ')' unaryExpressionNotPlusMinus
     ;
@@ -1096,8 +1096,8 @@ castExpression
 /**
  * have to use scope here, parameter passing isn't well supported in antlr.
  */
-primary 
-    :   parExpression            
+primary
+    :   parExpression
     |   'this'
         ('.' IDENTIFIER
         )*
@@ -1118,9 +1118,9 @@ primary
         '.' 'class'
     |   'void' '.' 'class'
     ;
-    
 
-superSuffix  
+
+superSuffix
     :   arguments
     |   '.' (typeArguments
         )?
@@ -1130,7 +1130,7 @@ superSuffix
     ;
 
 
-identifierSuffix 
+identifierSuffix
     :   ('[' ']'
         )+
         '.' 'class'
@@ -1145,7 +1145,7 @@ identifierSuffix
     ;
 
 
-selector  
+selector
     :   '.' IDENTIFIER
         (arguments
         )?
@@ -1156,13 +1156,13 @@ selector
     |   '[' expression ']'
     ;
 
-creator 
+creator
     :   'new' nonWildcardTypeArguments classOrInterfaceType classCreatorRest
     |   'new' classOrInterfaceType classCreatorRest
     |   arrayCreator
     ;
 
-arrayCreator 
+arrayCreator
     :   'new' createdName
         '[' ']'
         ('[' ']'
@@ -1179,28 +1179,28 @@ arrayCreator
         )*
     ;
 
-variableInitializer 
+variableInitializer
     :   arrayInitializer
     |   expression
     ;
 
-arrayInitializer 
-    :   '{' 
+arrayInitializer
+    :   '{'
             (variableInitializer
                 (',' variableInitializer
                 )*
-            )? 
-            (',')? 
+            )?
+            (',')?
         '}'             //Yang's fix, position change.
     ;
 
 
-createdName 
+createdName
     :   classOrInterfaceType
     |   primitiveType
     ;
 
-innerCreator  
+innerCreator
     :   '.' 'new'
         (nonWildcardTypeArguments
         )?
@@ -1211,24 +1211,24 @@ innerCreator
     ;
 
 
-classCreatorRest 
+classCreatorRest
     :   arguments
         (classBody
         )?
     ;
 
 
-nonWildcardTypeArguments 
+nonWildcardTypeArguments
     :   '<' typeList
         '>'
     ;
 
-arguments 
+arguments
     :   '(' (expressionList
         )? ')'
     ;
 
-literal 
+literal
     :   INTLITERAL
     |   LONGLITERAL
     |   FLOATLITERAL
@@ -1243,36 +1243,36 @@ literal
 /**
  * These are headers help to make syntatical predicates, not necessary but helps to make grammar faster.
  */
- 
-classHeader 
+
+classHeader
     :   modifiers 'class' IDENTIFIER
     ;
 
-enumHeader 
+enumHeader
     :   modifiers ('enum'|IDENTIFIER) IDENTIFIER
     ;
 
-interfaceHeader 
+interfaceHeader
     :   modifiers 'interface' IDENTIFIER
     ;
 
-annotationHeader 
+annotationHeader
     :   modifiers '@' 'interface' IDENTIFIER
     ;
 
-typeHeader 
+typeHeader
     :   modifiers ('class'|'enum'|('@' ? 'interface')) IDENTIFIER
     ;
 
-methodHeader 
+methodHeader
     :   modifiers typeParameters? (type|'void')? IDENTIFIER '('
     ;
 
-fieldHeader 
+fieldHeader
     :   modifiers type IDENTIFIER ('['']')* ('='|','|';')
     ;
 
-localVariableHeader 
+localVariableHeader
     :   variableModifiers type IDENTIFIER ('['']')* ('='|','|';')
     ;
 
@@ -1287,24 +1287,24 @@ LONGLITERAL
     :   IntegerNumber LongSuffix
     ;
 
-    
+
 INTLITERAL
-    :   IntegerNumber 
+    :   IntegerNumber
     ;
-    
+
 fragment
 IntegerNumber
-    :   '0' 
-    |   '1'..'9' ('0'..'9')*    
-    |   '0' ('0'..'7')+         
-    |   HexPrefix HexDigit+        
+    :   '0'
+    |   '1'..'9' ('0'..'9')*
+    |   '0' ('0'..'7')+
+    |   HexPrefix HexDigit+
     ;
 
 fragment
 HexPrefix
     :   '0x' | '0X'
     ;
-        
+
 fragment
 HexDigit
     :   ('0'..'9'|'a'..'f'|'A'..'F')
@@ -1318,92 +1318,92 @@ LongSuffix
 
 fragment
 NonIntegerNumber
-    :   ('0' .. '9')+ '.' ('0' .. '9')* Exponent?  
-    |   '.' ( '0' .. '9' )+ Exponent?  
-    |   ('0' .. '9')+ Exponent  
-    |   ('0' .. '9')+ 
-    |   
-        HexPrefix (HexDigit )* 
-        (    () 
-        |    ('.' (HexDigit )* ) 
-        ) 
-        ( 'p' | 'P' ) 
-        ( '+' | '-' )? 
+    :   ('0' .. '9')+ '.' ('0' .. '9')* Exponent?
+    |   '.' ( '0' .. '9' )+ Exponent?
+    |   ('0' .. '9')+ Exponent
+    |   ('0' .. '9')+
+    |
+        HexPrefix (HexDigit )*
+        (    ()
+        |    ('.' (HexDigit )* )
+        )
+        ( 'p' | 'P' )
+        ( '+' | '-' )?
         ( '0' .. '9' )+
         ;
-        
-fragment 
-Exponent    
-    :   ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ 
+
+fragment
+Exponent
+    :   ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
     ;
-    
-fragment 
+
+fragment
 FloatSuffix
-    :   'f' | 'F' 
-    ;     
+    :   'f' | 'F'
+    ;
 
 fragment
 DoubleSuffix
     :   'd' | 'D'
     ;
-        
+
 FLOATLITERAL
     :   NonIntegerNumber FloatSuffix
     ;
-    
+
 DOUBLELITERAL
     :   NonIntegerNumber DoubleSuffix?
     ;
 
 CHARLITERAL
-    :   '\'' 
-        (   EscapeSequence 
+    :   '\''
+        (   EscapeSequence
         |   ~( '\'' | '\\' | '\r' | '\n' )
-        ) 
+        )
         '\''
-    ; 
+    ;
 
 STRINGLITERAL
-    :   '"' 
+    :   '"'
         (   EscapeSequence
-        |   ~( '\\' | '"' | '\r' | '\n' )        
-        )* 
-        '"' 
+        |   ~( '\\' | '"' | '\r' | '\n' )
+        )*
+        '"'
     ;
 
 fragment
-EscapeSequence 
+EscapeSequence
     :   '\\' (
-                 'b' 
-             |   't' 
-             |   'n' 
-             |   'f' 
-             |   'r' 
-             |   '\"' 
-             |   '\'' 
-             |   '\\' 
-             |       
+                 'b'
+             |   't'
+             |   'n'
+             |   'f'
+             |   'r'
+             |   '\"'
+             |   '\''
+             |   '\\'
+             |
                  ('0'..'3') ('0'..'7') ('0'..'7')
-             |       
-                 ('0'..'7') ('0'..'7') 
-             |       
+             |
+                 ('0'..'7') ('0'..'7')
+             |
                  ('0'..'7')
-             )          
-;     
+             )
+;
 
-WS  
+WS
     :   (
              ' '
         |    '\r'
         |    '\t'
         |    '\u000C'
         |    '\n'
-        ) 
+        )
             {
                 skip();
-            }          
+            }
     ;
-    
+
 COMMENT
          @init{
             boolean isJavaDoc = false;
@@ -1414,7 +1414,7 @@ COMMENT
                     isJavaDoc = true;
                 }
             }
-        (options {greedy=false;} : . )* 
+        .*?                     // non-greedy
         '*/'
             {
                 if(isJavaDoc==true){
@@ -1426,7 +1426,7 @@ COMMENT
     ;
 
 LINE_COMMENT
-    :   '//' ~('\n'|'\r')*  ('\r\n' | '\r' | '\n') 
+    :   '//' ~('\n'|'\r')*  ('\r\n' | '\r' | '\n')
             {
                 skip();
             }
@@ -1434,44 +1434,44 @@ LINE_COMMENT
             {
                 skip();
             }
-    ;   
-        
+    ;
+
 ABSTRACT
     :   'abstract'
     ;
-    
+
 ASSERT
     :   'assert'
     ;
-    
+
 BOOLEAN
     :   'boolean'
     ;
-    
+
 BREAK
     :   'break'
     ;
-    
+
 BYTE
     :   'byte'
     ;
-    
+
 CASE
     :   'case'
     ;
-    
+
 CATCH
     :   'catch'
     ;
-    
+
 CHAR
     :   'char'
     ;
-    
+
 CLASS
     :   'class'
     ;
-    
+
 CONST
     :   'const'
     ;
@@ -1498,7 +1498,7 @@ ELSE
 
 ENUM
     :   'enum'
-    ;             
+    ;
 
 EXTENDS
     :   'extends'
@@ -1762,8 +1762,8 @@ PERCENT
 
 PLUSEQ
     :   '+='
-    ; 
-    
+    ;
+
 SUBEQ
     :   '-='
     ;
@@ -1806,16 +1806,16 @@ GT
 
 LT
     :   '<'
-    ;        
-              
+    ;
+
 IDENTIFIER
     :   IdentifierStart IdentifierPart*
     ;
 
 fragment
-SurrogateIdentifer 
-    :   ('\ud800'..'\udbff') ('\udc00'..'\udfff') 
-    ;                 
+SurrogateIdentifer
+    :   ('\ud800'..'\udbff') ('\udc00'..'\udfff')
+    ;
 
 fragment
 IdentifierStart
@@ -2017,7 +2017,7 @@ IdentifierStart
     |   '\u1760'..'\u176c'
     |   '\u176e'..'\u1770'
     |   '\u1780'..'\u17b3'
-    |   '\u17d7' 
+    |   '\u17d7'
     |   '\u17db'..'\u17dc'
     |   '\u1820'..'\u1877'
     |   '\u1880'..'\u18a8'
@@ -2112,10 +2112,10 @@ IdentifierStart
     |   '\uffda'..'\uffdc'
     |   '\uffe0'..'\uffe1'
     |   '\uffe5'..'\uffe6'
-    |   ('\ud800'..'\udbff') ('\udc00'..'\udfff') 
-    ;                
-                       
-fragment 
+    |   ('\ud800'..'\udbff') ('\udc00'..'\udfff')
+    ;
+
+fragment
 IdentifierPart
     :   '\u0000'..'\u0008'
     |   '\u000e'..'\u001b'
@@ -2226,7 +2226,7 @@ IdentifierPart
     |   '\u0ae6'..'\u0aef'
     |   '\u0af1'
     |   '\u0b01'..'\u0b03'
-    |   '\u0b05'..'\u0b0c'        
+    |   '\u0b05'..'\u0b0c'
     |   '\u0b0f'..'\u0b10'
     |   '\u0b13'..'\u0b28'
     |   '\u0b2a'..'\u0b30'
@@ -2268,7 +2268,7 @@ IdentifierPart
     |   '\u0c4a'..'\u0c4d'
     |   '\u0c55'..'\u0c56'
     |   '\u0c60'..'\u0c61'
-    |   '\u0c66'..'\u0c6f'        
+    |   '\u0c66'..'\u0c6f'
     |   '\u0c82'..'\u0c83'
     |   '\u0c85'..'\u0c8c'
     |   '\u0c8e'..'\u0c90'
@@ -2309,7 +2309,7 @@ IdentifierPart
     |   '\u0e50'..'\u0e59'
     |   '\u0e81'..'\u0e82'
     |   '\u0e84'
-    |   '\u0e87'..'\u0e88'        
+    |   '\u0e87'..'\u0e88'
     |   '\u0e8a'
     |   '\u0e8d'
     |   '\u0e94'..'\u0e97'
@@ -2350,7 +2350,7 @@ IdentifierPart
     |   '\u1100'..'\u1159'
     |   '\u115f'..'\u11a2'
     |   '\u11a8'..'\u11f9'
-    |   '\u1200'..'\u1206'        
+    |   '\u1200'..'\u1206'
     |   '\u1208'..'\u1246'
     |   '\u1248'
     |   '\u124a'..'\u124d'
@@ -2358,7 +2358,7 @@ IdentifierPart
     |   '\u1258'
     |   '\u125a'..'\u125d'
     |   '\u1260'..'\u1286'
-    |   '\u1288'        
+    |   '\u1288'
     |   '\u128a'..'\u128d'
     |   '\u1290'..'\u12ae'
     |   '\u12b0'
@@ -2415,7 +2415,7 @@ IdentifierPart
     |   '\u1f5d'
     |   '\u1f5f'..'\u1f7d'
     |   '\u1f80'..'\u1fb4'
-    |   '\u1fb6'..'\u1fbc'        
+    |   '\u1fb6'..'\u1fbc'
     |   '\u1fbe'
     |   '\u1fc2'..'\u1fc4'
     |   '\u1fc6'..'\u1fcc'
@@ -2451,7 +2451,7 @@ IdentifierPart
     |   '\u2145'..'\u2149'
     |   '\u2160'..'\u2183'
     |   '\u3005'..'\u3007'
-    |   '\u3021'..'\u302f'        
+    |   '\u3021'..'\u302f'
     |   '\u3031'..'\u3035'
     |   '\u3038'..'\u303c'
     |   '\u3041'..'\u3096'
@@ -2501,7 +2501,6 @@ IdentifierPart
     |   '\uffda'..'\uffdc'
     |   '\uffe0'..'\uffe1'
     |   '\uffe5'..'\uffe6'
-    |   '\ufff9'..'\ufffb' 
+    |   '\ufff9'..'\ufffb'
     |   ('\ud800'..'\udbff') ('\udc00'..'\udfff')
     ;
-

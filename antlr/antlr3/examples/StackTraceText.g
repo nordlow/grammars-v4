@@ -1,4 +1,4 @@
-/** A Java stacktrace text grammar for ANTLR v3 
+/** A Java stacktrace text grammar for ANTLR v3
  *  see http://java.sun.com/javase/6/docs/api/java/lang/Throwable.html
  *
  *  Version 1.0 -- initial release March 9, 2008 (requires 3.0 or higher)
@@ -27,20 +27,20 @@ INIT='<init>';
 
 startRule
     : stackTrace EOF;
-    
-    
-stackTrace 
-	:	messageLine+ stackTraceLine* causedByLine? 
+
+
+stackTrace
+	:	messageLine+ stackTraceLine* causedByLine?
 	;
 
-stackTraceLine 
+stackTraceLine
 	:	 (atLine|ellipsisLine)
 	;
 
 atLine
 	:	AT qualifiedMethod '(' classFile (COLON Number)? ')'
 	;
-	
+
 causedByLine
 	:	CAUSED_BY stackTrace
 	;
@@ -48,22 +48,22 @@ causedByLine
 ellipsisLine	:	ELLIPSIS Number MORE
                              ;
 
-messageLine 
-	:	(qualifiedClass message?) 
+messageLine
+	:	(qualifiedClass message?)
  	;
- 	
+
 qualifiedClass: packagePath? className innerClassName*;
 
 innerClassName
 	:	('$' className)
-	; 	
+	;
 
 classFile
 	:	(identifier '.java' | NATIVE_METHOD | UNKNOWN_SOURCE)
 	;
 
 /** method name may be missing, I think in ctors */
-qualifiedMethod 
+qualifiedMethod
 	:	qualifiedClass DOT (methodName|constructor)?;
 
 constructor
@@ -72,7 +72,7 @@ constructor
 
 methodName
 	:	identifier
-	;	
+	;
 
 packagePath    : (identifier DOT)+;
 
@@ -80,8 +80,8 @@ className  : JavaWord;
 
 identifier : JavaWord;
 
-message : COLON (options {greedy=false;}: .)*;
-    
+message : COLON .*?;
+
 Number	:	Digit+
 	;
 
@@ -93,7 +93,7 @@ JavaCharacter
     |    NonCapitalLetter | Symbol
     |    Digit)
 	;
-	
+
 fragment NonCapitalLetter    :    'a'..'z';
 
 fragment CapitalLetter

@@ -18,7 +18,7 @@ translation_unit: external_declaration+ EOF;
 external_declaration:
 COMMENT | LINE_COMMENT | preprocessor_declaration
 |function_definition
-| declaration 
+| declaration
 | class_interface
 | class_implementation
 | category_interface
@@ -112,14 +112,14 @@ protocol_name:
 instance_variables:
 	'{' instance_variable_declaration '}';
 
-instance_variable_declaration:	
+instance_variable_declaration:
 	(visibility_specification | struct_declarator_list instance_variables)+
 	;
 
 visibility_specification:
 	'@private'
 	| '@protected'
-	| '@package' 
+	| '@package'
 	| '@public';
 
 interface_declaration_list:
@@ -147,7 +147,7 @@ class_method_definition:
 instance_method_definition:
 	('-' method_definition)
 	;
-	
+
 method_definition:
 	(method_type)? method_selector (init_declarator_list)? compound_statement;
 
@@ -165,11 +165,11 @@ method_type:
 '(' type_name ')';
 
 type_specifier:
-'void' | 'char' | 'short' | 'int' | 'long' | 'float' | 'double' | 'signed' | 'unsigned' 
+'void' | 'char' | 'short' | 'int' | 'long' | 'float' | 'double' | 'signed' | 'unsigned'
 	|	('id' ( protocol_reference_list )? )
 	|	(class_name ( protocol_reference_list )?)
 	|	struct_or_union_specifier
-	|	enum_specifier 
+	|	enum_specifier
 	|	IDENTIFIER;
 
 type_qualifier:
@@ -195,7 +195,7 @@ message_expression:
 
 receiver:
 	expression
-	| class_name 
+	| class_name
 	| 'super';
 
 message_selector:
@@ -245,7 +245,7 @@ function_definition : declaration_specifiers declarator compound_statement ;
 
 declaration : declaration_specifiers init_declarator_list? ';';
 
-declaration_specifiers 
+declaration_specifiers
   : (storage_class_specifier | type_specifier | type_qualifier)+ ;
 
 storage_class_specifier: 'auto' | 'register' | 'static' | 'extern' | 'typedef';
@@ -253,7 +253,7 @@ storage_class_specifier: 'auto' | 'register' | 'static' | 'extern' | 'typedef';
 init_declarator_list :	init_declarator (',' init_declarator)* ;
 init_declarator : declarator ('=' initializer)? ;
 
-struct_or_union_specifier: ('struct' | 'union') 
+struct_or_union_specifier: ('struct' | 'union')
   ( IDENTIFIER | IDENTIFIER? '{' struct_declaration+ '}') ;
 
 struct_declaration : specifier_qualifier_list struct_declarator_list ';' ;
@@ -264,8 +264,8 @@ struct_declarator_list : struct_declarator (',' struct_declarator)* ;
 
 struct_declarator : declarator | declarator? ':' constant;
 
-enum_specifier : 'enum' 
-  ( identifier ('{' enumerator_list '}')? 
+enum_specifier : 'enum'
+  ( identifier ('{' enumerator_list '}')?
   | '{' enumerator_list '}') ;
 enumerator_list : enumerator (',' enumerator)* ;
 enumerator : identifier ('=' constant_expression)?;
@@ -280,7 +280,7 @@ declarator_suffix : '[' constant_expression? ']'
 
 parameter_list : parameter_declaration_list ( ',' '...' )? ;
 
-parameter_declaration 
+parameter_declaration
   : declaration_specifiers (declarator? | abstract_declarator) ;
 
 initializer : assignment_expression
@@ -288,7 +288,7 @@ initializer : assignment_expression
 
 type_name : specifier_qualifier_list abstract_declarator ;
 
-abstract_declarator : '*' type_qualifier* abstract_declarator 
+abstract_declarator : '*' type_qualifier* abstract_declarator
   | '(' abstract_declarator ')' abstract_declarator_suffix+
   | ('[' constant_expression? ']')+
   | ;
@@ -302,7 +302,7 @@ parameter_declaration_list
 
 statement_list : (statement)+ ;
 
-statement 
+statement
   : labeled_statement
   | expression ';'
   | compound_statement
@@ -331,35 +331,35 @@ jump_statement
   : 'goto' identifier ';'
   | 'continue' ';'
   | 'break' ';'
-  | 'return' expression? ';' 
+  | 'return' expression? ';'
   ;
 
 expression : assignment_expression (',' assignment_expression)* ;
 
-assignment_expression : conditional_expression 
+assignment_expression : conditional_expression
   ( assignment_operator assignment_expression)? ;
-assignment_operator: 
+assignment_operator:
   '=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|=';
 
-conditional_expression : logical_or_expression 
+conditional_expression : logical_or_expression
   ('?' logical_or_expression ':' logical_or_expression)? ;
 
 constant_expression : conditional_expression ;
 
-logical_or_expression :	logical_and_expression 
+logical_or_expression :	logical_and_expression
   ('||' logical_and_expression)* ;
 
-logical_and_expression : inclusive_or_expression 
+logical_and_expression : inclusive_or_expression
   ('&&' inclusive_or_expression)* ;
 
-inclusive_or_expression : exclusive_or_expression 
+inclusive_or_expression : exclusive_or_expression
   ('|' exclusive_or_expression)* ;
 
 exclusive_or_expression : and_expression ('^' and_expression)* ;
 
 and_expression : equality_expression ('&' equality_expression)* ;
 
-equality_expression : relational_expression 
+equality_expression : relational_expression
   (('!=' | '==') relational_expression)* ;
 
 relational_expression : shift_expression
@@ -370,12 +370,12 @@ shift_expression : additive_expression (('<<' | '>>') additive_expression)* ;
 additive_expression : multiplicative_expression
   (('+' | '-') multiplicative_expression)* ;
 
-multiplicative_expression : cast_expression 
+multiplicative_expression : cast_expression
   (('*' | '/' | '%') cast_expression)* ;
 
 cast_expression : '(' type_name ')' cast_expression | unary_expression ;
 
-unary_expression 
+unary_expression
   : postfix_expression
   | '++' unary_expression
   | '--' unary_expression
@@ -385,7 +385,7 @@ unary_expression
 unary_operator : '&' | '*' | '-' | '~' | '!' ;
 
 postfix_expression : primary_expression
-  ('[' expression ']' 
+  ('[' expression ']'
   | '(' argument_expression_list? ')'
   | '.' identifier
   | '->' identifier
@@ -403,7 +403,7 @@ constant : DECIMAL_LITERAL | HEX_LITERAL | OCTAL_LITERAL | CHARACTER_LITERAL | F
 IDENTIFIER
 	:	LETTER (LETTER|'0'..'9')*
 	;
-	
+
 fragment
 LETTER
 	:	'$'
@@ -466,7 +466,7 @@ WS  :  (' '|'\r'|'\t'|'\u000C'|'\n') {$channel=HIDDEN;}
     ;
 
 COMMENT
-    :   '/*' ( options {greedy=false;} : . )* '*/'
+    :   '/*' .*? '*/'
     ;
 
 LINE_COMMENT

@@ -383,7 +383,7 @@ field!
 
 constructorBody
     :   lc:LCURLY^ {#lc.setType(SLIST);}
-            ( options { greedy=true; } : explicitConstructorInvocation)?
+            (explicitConstructorInvocation)? // greedy
             (statement)*
         RCURLY!
     ;
@@ -591,12 +591,8 @@ casesGroup
 			//           ANTLR generates proper code: it groups the
 			//           many "case"/"default" labels together then
 			//           follows them with the statements
-			options {
-				greedy = true;
-			}
-			:
 			aCase
-		)+
+		)+                      // greedy
 		caseSList
 		{#casesGroup = #([CASE_GROUP, "CASE_GROUP"], #casesGroup);}
 	;
@@ -871,7 +867,7 @@ postfixExpression
 
 // the basic element of an expression
 primaryExpression
-	:	identPrimary ( options {greedy=true;} : DOT^ "class" )?
+	:	identPrimary (DOT^ "class" )? // greedy
     |   constant
 	|	"true"
 	|	"false"
@@ -893,26 +889,20 @@ primaryExpression
 identPrimary
 	:	IDENT
 		(
-            options {
-				// .ident could match here or in postfixExpression.
-				// We do want to match here.  Turn off warning.
-				greedy=true;
-			}
-		:	DOT^ IDENT
-		)*
+            // greedy because
+            // .ident could match here or in postfixExpression.
+            // We do want to match here.  Turn off warning.
+			DOT^ IDENT
+		)*                      // greedy
 		(
-            options {
-				// ARRAY_DECLARATOR here conflicts with INDEX_OP in
-				// postfixExpression on LBRACK RBRACK.
-				// We want to match [] here, so greedy.  This overcomes
-                // limitation of linear approximate lookahead.
-				greedy=true;
-		    }
-		:   ( lp:LPAREN^ {#lp.setType(METHOD_CALL);} argList RPAREN! )
-		|	( options {greedy=true;} :
-              lbc:LBRACK^ {#lbc.setType(ARRAY_DECLARATOR);} RBRACK!
-            )+
-		)?
+            // greedy because
+            // ARRAY_DECLARATOR here conflicts with INDEX_OP in
+            // postfixExpression on LBRACK RBRACK.
+            // We want to match [] here, so greedy.  This overcomes
+            // limitation of linear approximate lookahead.
+            ( lp:LPAREN^ {#lp.setType(METHOD_CALL);} argList RPAREN! )
+		|	( lbc:LBRACK^ {#lbc.setType(ARRAY_DECLARATOR);} RBRACK! )+ // greedy
+		)?                      // greedy
     ;
 
 /** object instantiation.

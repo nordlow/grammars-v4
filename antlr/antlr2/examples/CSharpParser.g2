@@ -6,7 +6,7 @@ header
 
 options
 {
-	language 	= "CSharp";	
+	language 	= "CSharp";
 	namespace	= "Kunle.CSharpParser";
 }
 
@@ -44,14 +44,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// <remarks>
 /// <para>
-/// The Parser defined below is based on the "C# Language Specification" as documented in 
+/// The Parser defined below is based on the "C# Language Specification" as documented in
 /// the ECMA-334 standard dated December 2001.
 /// </para>
 ///
 /// <para>
 /// One notable feature of this parser is that it can handle input that includes "normalized"
-/// C# preprocessing directives. In the simplest sense, normalized C# preprocessing directives 
-/// are directives that can be safely deleted from a source file without triggering any parsing 
+/// C# preprocessing directives. In the simplest sense, normalized C# preprocessing directives
+/// are directives that can be safely deleted from a source file without triggering any parsing
 /// errors due to incomplete statements etc.
 /// </para>
 ///
@@ -127,10 +127,10 @@ tokens
 	METHOD_DECL;
 	PROPERTY_DECL;
 	INDEXER_DECL;
-	UNARY_OP_DECL;	
-	BINARY_OP_DECL;	
-	CONV_OP_DECL;	
-	
+	UNARY_OP_DECL;
+	BINARY_OP_DECL;
+	CONV_OP_DECL;
+
 	TYPE;
 	STARS;
 	ARRAY_RANK;
@@ -143,7 +143,7 @@ tokens
 	LOCVAR_INIT_LIST;
 	LOCVAR_DECLS;
 	LOCAL_CONST;
-	
+
 	EXPR;
 	EXPR_LIST;
 	MEMBER_ACCESS_EXPR;
@@ -162,19 +162,19 @@ tokens
 	PTR_DECLARATOR;
 	PTR_INIT;
 	ADDRESS_OF_EXPR;
-	
+
 	MODIFIERS;
-	NAMESPACE_BODY;	
+	NAMESPACE_BODY;
 	BLOCK;
 	STMT_LIST;
 	EMPTY_STMT;
 	LABEL_STMT;
 	EXPR_STMT;
-	
+
 	FOR_INIT;
 	FOR_COND;
 	FOR_ITER;
-	
+
 	SWITCH_SECTION;
 	SWITCH_LABELS;
 	SWITCH_LABEL;
@@ -190,12 +190,12 @@ tokens
 	// PRIVATE DATA MEMBERS
 	//---------------------------------------------------------------------
 	private FileInfo fileinfo_;
-		
+
 	private bool NotExcluded(CodeMaskEnums codeMask, CodeMaskEnums construct)
 	{
 		return ((codeMask & construct) != 0 );
 	}
-	
+
 	public override void setFilename(string filename)
 	{
 		base.setFilename(filename);
@@ -215,7 +215,7 @@ tokens
 		}
 		return false;
 	}
-	
+
 	private bool PPDirectiveIsPredictedByLA(int lookAheadDepth)
 	{
 		if ((LA(lookAheadDepth) == PP_REGION)   ||
@@ -230,7 +230,7 @@ tokens
 		}
 		return false;
 	}
-	
+
 	private bool IdentifierRuleIsPredictedByLA(int lookAheadDepth)
 	{
 		if ((LA(lookAheadDepth) == IDENTIFIER)       ||
@@ -250,7 +250,7 @@ tokens
 		}
 		return false;
 	}
-	
+
 	private bool TypeRuleIsPredictedByLA(int lookAheadDepth)
 	{
 		if ((LA(lookAheadDepth) == DOT)        ||
@@ -285,7 +285,7 @@ tokens
 //
 // C# LANGUAGE SPECIFICATION
 //
-// A.2 Syntactic grammar 
+// A.2 Syntactic grammar
 //
 // The start rule for this grammar is 'compilationUnit'
 //
@@ -307,17 +307,15 @@ nonKeywordLiterals
 	|	"property"
 	|	"type"
 	;
-	
+
 identifier
 	:	IDENTIFIER
 	|	n:nonKeywordLiterals { #n.setType(IDENTIFIER); }
 	;
-	
+
 qualifiedIdentifier
-	:	identifier	
-		(	options { greedy = true; } :
-			DOT^ qualifiedIdentifier
-		)?
+	:	identifier
+		(DOT^ qualifiedIdentifier)? // greedy
 	;
 
 /*
@@ -327,15 +325,15 @@ qualifiedIdentifier
 */
 type!
 	{
-		ASTNode typeBase  = null; 
-		ASTNode starsBase = #[STARS, "STARS"]; 
+		ASTNode typeBase  = null;
+		ASTNode starsBase = #[STARS, "STARS"];
 	}
 	:	(
 			( p:predefinedTypeName { typeBase = #p; } | q:qualifiedIdentifier { typeBase = #q; } )	// typeName
 			(
 				s1:STAR						// pointerType
 				{
-					#starsBase.addChildEx(#s1); 
+					#starsBase.addChildEx(#s1);
 				}
 			)*
 
@@ -348,7 +346,7 @@ type!
 		r:rankSpecifiers 						//	arrayType := nonArrayType rankSpecifiers
 		{ ## = #( [TYPE, "TYPE"], typeBase, starsBase, r ); }
 	;
-	
+
 integralType
 	:	(	SBYTE
 		|	BYTE
@@ -362,7 +360,7 @@ integralType
 		)
 		{ ## = #( [TYPE, "TYPE"], ##, [STARS, "STARS"], [ARRAY_RANKS, "ARRAY_RANKS"] ); }
 	;
-	
+
 classType
 	:	(	qualifiedIdentifier		// typeName
 		|	OBJECT
@@ -371,7 +369,7 @@ classType
 		{ ## = #( [TYPE, "TYPE"], ##, [STARS, "STARS"], [ARRAY_RANKS, "ARRAY_RANKS"] ); }
 	;
 
-/*	
+/*
 //
 // A.2.4 Expressions
 //
@@ -380,7 +378,7 @@ argumentList
 	:	argument ( COMMA! argument )*
 		{ ## = #( [ARG_LIST, "ARG_LIST"], #argumentList ); }
 	;
-	
+
 argument
 	:	expression
 	|	REF^ expression
@@ -390,18 +388,18 @@ argument
 constantExpression
 	:	expression
 	;
-	
+
 booleanExpression
 	:	expression
 	;
-	
+
 expressionList
 	:	expression ( COMMA! expression )*
 		{ ## = #( [EXPR_LIST, "EXPR_LIST"], #expressionList ); }
 	;
 
 
-/*	
+/*
 //======================================
 // 14.2.1 Operator precedence and associativity
 //
@@ -424,9 +422,9 @@ expressionList
 //  highest ( 1)  14.5     Primary                      x.y f(x) a[x] x++ x-- new
 //                                                      typeof checked unchecked
 //
-// NOTE: In accordance with lessons gleaned from the "java.g" file supplied with ANTLR, 
+// NOTE: In accordance with lessons gleaned from the "java.g" file supplied with ANTLR,
 //       I have applied the following pattern to the rules for expressions:
-// 
+//
 //           thisLevelExpression :
 //               nextHigherPrecedenceExpression (OPERATOR nextHigherPrecedenceExpression)*
 //
@@ -439,7 +437,7 @@ expression
 	;
 
 assignmentExpression
-	:	conditionalExpression 
+	:	conditionalExpression
 		(	(	ASSIGN^
 			|	PLUS_ASSIGN^
 			|	MINUS_ASSIGN^
@@ -451,67 +449,67 @@ assignmentExpression
 			|	BIN_XOR_ASSIGN^
 			|	SHIFTL_ASSIGN^
 			|	SHIFTR_ASSIGN^
-			) 
-			assignmentExpression 
-		)?		
+			)
+			assignmentExpression
+		)?
 	;
-	
+
 conditionalExpression
 	:	conditionalOrExpression ( QUESTION^ assignmentExpression
 	                              COLON!    conditionalExpression
-	                            )?	
+	                            )?
 	;
-	
+
 conditionalOrExpression
 	:	conditionalAndExpression (	LOG_OR^ conditionalAndExpression )*
-	
+
 	;
 
 conditionalAndExpression
 	:	inclusiveOrExpression (	LOG_AND^ inclusiveOrExpression )*
-	
+
 	;
-	
+
 inclusiveOrExpression
 	:	exclusiveOrExpression ( BIN_OR^ exclusiveOrExpression )*
-		
+
 	;
-	
+
 exclusiveOrExpression
 	:	andExpression ( BIN_XOR^ andExpression )*
 	;
-	
+
 andExpression
 	:	equalityExpression (	BIN_AND^ equalityExpression )*
 	;
-	
+
 equalityExpression
 	:	relationalExpression ( ( EQUAL^ | NOT_EQUAL^ ) relationalExpression )*
 	;
-	
+
 relationalExpression
-	:	shiftExpression 
+	:	shiftExpression
 		(	( ( LTHAN^ | GTHAN^ | LTE^ | GTE^ ) shiftExpression )*
 		|	( IS^ | AS^ ) type
 		)
 	;
-	
+
 shiftExpression
 	:	additiveExpression (	( SHIFTL^ | SHIFTR^ ) additiveExpression )*
 	;
-	
+
 additiveExpression
 	:	multiplicativeExpression (	( PLUS^ | MINUS^ ) multiplicativeExpression )*
-	;	
+	;
 
 multiplicativeExpression
 	:	unaryExpression ( ( STAR^ | DIV^ | MOD^ ) unaryExpression )*
 	;
-	
+
 unaryExpression
 	:	// castExpression
 		//
-		( OPEN_PAREN type CLOSE_PAREN unaryExpression )=> 
+		( OPEN_PAREN type CLOSE_PAREN unaryExpression )=>
 		o:OPEN_PAREN^ { #o.setType(CAST_EXPR); } type CLOSE_PAREN! unaryExpression
 	|	// preIncrementExpression
 		//
@@ -531,9 +529,9 @@ unaryExpression
 		b:BIN_AND^ { #b.setType(ADDRESS_OF_EXPR); } unaryExpression
 	|	primaryExpression
 	;
-	
+
 basicPrimaryExpression
-		// primaryNoArrayCreationExpression		
+		// primaryNoArrayCreationExpression
 		//
 	:	(	literal
 		|	identifier											// simpleName
@@ -544,7 +542,7 @@ basicPrimaryExpression
 		|	BASE^
 			(	DOT! identifier									// baseAccess
 			|	OPEN_BRACK! expressionList CLOSE_BRACK!			// baseAccess
-			)			
+			)
 		|	newExpression
 		|!	to_t:TYPEOF^ OPEN_PAREN!
 			(	{ ((LA(1) == VOID) && (LA(2) == CLOSE_PAREN)) }? to_v:voidAsType CLOSE_PAREN!	// typeofExpression
@@ -566,7 +564,7 @@ basicPrimaryExpression
 
 primaryExpression!
 	:	bexpr:basicPrimaryExpression		{ ## = #bexpr; }
-		(	options { greedy = true; } : 
+		(
 			(	// invocationExpression  ::= primaryExpression OPEN_PAREN ( argumentList )? CLOSE_PAREN
 				//
 				op:OPEN_PAREN { #a = null; } ( a:argumentList )? CLOSE_PAREN!
@@ -595,15 +593,15 @@ primaryExpression!
 					## = #( #ic, #bexpr );
 				}
 			|	dc:DEC															// postDecrementExpression
-				{ 
-					#dc.setType(POST_DEC_EXPR); 
+				{
+					#dc.setType(POST_DEC_EXPR);
 					## = #( #dc, #bexpr );
 				}
 			|	pm_deref:DEREF pm_id:identifier									// pointerMemberAccess
 				{ ## = #( #pm_deref, #bexpr, #pm_id ); }
 			)
 			{ #bexpr = ##; }
-		)*															
+		)*                      // greedy
 	;
 
 newExpression!
@@ -615,23 +613,23 @@ newExpression!
 			OPEN_PAREN! ( arglist:argumentList )? CLOSE_PAREN!
 			{
 				#n.setType(OBJ_CREATE_EXPR);
-				## = #( #n, #typ, #arglist ); 
+				## = #( #n, #typ, #arglist );
 			}
 		|	// arrayCreationExpression	::= NEW arrayType arrayInitializer
 			//
 			ar_init:arrayInitializer
 			{
 				#n.setType(ARRAY_CREATE_EXPR);
-				## = #( #n, #typ, #ar_init ); 
+				## = #( #n, #typ, #ar_init );
 			}
 		|	// arrayCreationExpression 	::= NEW nonArrayType OPEN_BRACK expressionList CLOSE_BRACK ( rankSpecifiers )? ( arrayInitializer )?
 			//
-			OPEN_BRACK! elist:expressionList CLOSE_BRACK! 
+			OPEN_BRACK! elist:expressionList CLOSE_BRACK!
 			ar_spec2:rankSpecifiers
 			( ar_init2:arrayInitializer )?
 			{
 				#n.setType(ARRAY_CREATE_EXPR);
-				## = #( #n, #typ, #elist, #ar_spec2, #ar_init2 ); 
+				## = #( #n, #typ, #elist, #ar_spec2, #ar_init2 );
 			}
 		)
 	;
@@ -652,7 +650,7 @@ literal
 	;
 
 predefinedType
-	:	(	BOOL 
+	:	(	BOOL
 		|	BYTE
 		|	CHAR
 		|	DECIMAL
@@ -670,9 +668,9 @@ predefinedType
 		)
 		{ ## = #( [TYPE, "TYPE"], ##, [STARS, "STARS"], [ARRAY_RANKS, "ARRAY_RANKS"] ); }
 	;
-	
+
 predefinedTypeName
-	:	BOOL 
+	:	BOOL
 	|	BYTE
 	|	CHAR
 	|	DECIMAL
@@ -688,7 +686,7 @@ predefinedTypeName
 	|	ULONG
 	|	USHORT
 	;
-	
+
 
 /*
 //
@@ -703,11 +701,11 @@ statement
 	|	embeddedStatement
 	|	preprocessorDirective[CodeMaskEnums.Statements]
 	;
-	
+
 embeddedStatement
 	:	block
 	|	//emptyStatement
-		//	
+		//
 		s:SEMI { #s.setType(EMPTY_STMT); }
 	|	expressionStatement
 	|	selectionStatement
@@ -722,78 +720,78 @@ embeddedStatement
 	|	fixedStatement
 	;
 
-	
+
 body
-	:	block	
+	:	block
 	|	s:SEMI { #s.setType(EMPTY_STMT); }
 	;
 
 block
 	:	o:OPEN_CURLY^ { #o.setType(BLOCK); } ( statement )* CLOSE_CURLY
 	;
-	
+
 statementList
 	:	(	statement )+
 		{ #statementList = #( [STMT_LIST, "STMT_LIST"], #statementList ); }
 	;
-	
+
 labeledStatement
 	:	id:identifier c:COLON^ { #c.setType(LABEL_STMT); } stmt:statement
 	;
-	
+
 declarationStatement
 	:	localVariableDeclaration SEMI!
 	|	localConstantDeclaration SEMI!
 	;
-	
+
 localVariableDeclaration
 	:	type localVariableDeclarators
 		{
-			## = #( [LOCVAR_DECLS, "LOCVAR_DECLS"], ## ); 
+			## = #( [LOCVAR_DECLS, "LOCVAR_DECLS"], ## );
 		}
 	;
-	
+
 localVariableDeclarators
 	:	localVariableDeclarator
-		( 
+		(
 			COMMA! localVariableDeclarator
 		)*
 	;
-	
+
 localVariableDeclarator
 	:	identifier ( ASSIGN! localVariableInitializer )?
 		{
-			## = #( [VAR_DECLARATOR, "VAR_DECLARATOR"], ## ); 
+			## = #( [VAR_DECLARATOR, "VAR_DECLARATOR"], ## );
 		}
 	;
-	
+
 localVariableInitializer
 	:	(	expression
 		|	arrayInitializer
 		)
 		{ #localVariableInitializer = #( [LOCVAR_INIT, "LOCVAR_INIT"], #localVariableInitializer ); }
 	;
-	
+
 localConstantDeclaration
 	:	c:CONST^ { #c.setType(LOCAL_CONST); } type constantDeclarators
 	;
-	
+
 constantDeclarators
 	:	constantDeclarator
 		(
 			COMMA! constantDeclarator
 		)*
 	;
-	
+
 constantDeclarator
 	:	identifier a:ASSIGN^ { #a.setType(CONST_DECLARATOR); } constantExpression
 	;
-	
+
 expressionStatement
 	:	statementExpression s:SEMI^
 		{ #s.setType(EXPR_STMT); }
 	;
-	
+
 statementExpression!
 	:	aexpr:assignmentExpression
 		{ ## = #aexpr; }
@@ -807,67 +805,67 @@ statementExpression!
 	|	preDecrementExpression
 */
 	;
-	
+
 selectionStatement
 	:	ifStatement
 	|	switchStatement
 	;
-	
+
 ifStatement
-	:	IF^ OPEN_PAREN! booleanExpression CLOSE_PAREN! embeddedStatement 
-		( options { greedy = true; } : elseStatement )?
+	:	IF^ OPEN_PAREN! booleanExpression CLOSE_PAREN! embeddedStatement
+		(elseStatement)?       // greedy
 	;
-	
+
 elseStatement
 	:	ELSE^ embeddedStatement
 	;
-	
+
 switchStatement
 	:	SWITCH^ OPEN_PAREN! expression CLOSE_PAREN! switchBlock
 	;
-	
+
 switchBlock
 	:	OPEN_CURLY^ ( switchSections )? CLOSE_CURLY
 	;
-	
+
 switchSections
 	:	( switchSection )+
 	;
-	
+
 switchSection!
 	:	lbl:switchLabels stmt:statementList
 		{ ## = #( [SWITCH_SECTION, "SWITCH_SECTION"], #lbl, #stmt ); }
 	;
-	
+
 switchLabels
 	:	( switchLabel )+
 		{ #switchLabels = #( [SWITCH_LABELS, "SWITCH_LABELS"], #switchLabels ); }
 	;
-	
+
 switchLabel
 	:	CASE^ constantExpression COLON!
 	|	DEFAULT^ COLON!
 	;
-	
+
 iterationStatement
 	:	whileStatement
 	|	doStatement
 	|	forStatement
 	|	foreachStatement
 	;
-	
+
 whileStatement
 	:	WHILE^ OPEN_PAREN! booleanExpression CLOSE_PAREN! embeddedStatement
 	;
-	
+
 doStatement
 	:	DO^ embeddedStatement WHILE! OPEN_PAREN! booleanExpression CLOSE_PAREN! SEMI!
 	;
-	
+
 forStatement
 	:	FOR^ OPEN_PAREN! forInitializer SEMI! forCondition SEMI! forIterator CLOSE_PAREN! embeddedStatement
 	;
-	
+
 forInitializer
 	:	(	{ (TypeRuleIsPredictedByLA(1) && IdentifierRuleIsPredictedByLA(2)) }? localVariableDeclaration
 		|	( type identifier )=> localVariableDeclaration
@@ -875,28 +873,28 @@ forInitializer
 		)?
 		{ #forInitializer = #( [FOR_INIT, "FOR_INIT"], #forInitializer ); }
 	;
-	
+
 forCondition
 	:	(	booleanExpression
 		)?
 		{ #forCondition = #( [FOR_COND, "FOR_COND"], #forCondition ); }
 	;
-	
+
 forIterator
 	:	(	statementExpressionList
 		)?
 		{ #forIterator = #( [FOR_ITER, "FOR_ITER"], #forIterator ); }
 	;
-	
+
 statementExpressionList
 	:	statementExpression ( COMMA! statementExpression )*
 	;
-	
+
 foreachStatement!
 	:	f:FOREACH OPEN_PAREN! t:type id:identifier IN! e:expression CLOSE_PAREN! s:embeddedStatement
 		{ ## = #( #f, #( [LOCVAR_DECLS], #t, #( [VAR_DECLARATOR], #id ) ), #e, #s ); }
 	;
-	
+
 jumpStatement
 	:	breakStatement
 	|	continueStatement
@@ -904,43 +902,44 @@ jumpStatement
 	|	returnStatement
 	|	throwStatement
 	;
-	
+
 breakStatement
 	:	BREAK^ SEMI!
 	;
-	
+
 continueStatement
 	:	CONTINUE^ SEMI!
 	;
-	
+
 gotoStatement
-	:	GOTO^ 
+	:	GOTO^
 		(	identifier SEMI!
 		|	CASE constantExpression SEMI!
 		|	DEFAULT SEMI!
 		)
 	;
-	
+
 returnStatement
 	:	RETURN^ ( expression )? SEMI!
 	;
-	
+
 throwStatement
 	:	THROW^ ( expression )? SEMI!
 	;
-	
+
 tryStatement
-	:	TRY^ block 
+	:	TRY^ block
 		(	finallyClause
 		|	catchClauses ( finallyClause )?
 		)
 	;
-	
+
 catchClauses
-	:	( options { greedy = true; } : specificCatchClause )+ ( generalCatchClause )?
+	:	( specificCatchClause )+ // greedy
+        ( generalCatchClause )?
 	|	generalCatchClause
 	;
-	
+
 specificCatchClause!
 	:	c:CATCH^ OPEN_PAREN! ctype:classType ( id:identifier )? CLOSE_PAREN! b:block
 		{
@@ -950,31 +949,31 @@ specificCatchClause!
 				## = #( #c, #b, #( [LOCVAR_DECLS], #ctype, #( [VAR_DECLARATOR], #id ) ) );
 		}
 	;
-	
+
 generalCatchClause
 	:	CATCH^ block
 	;
-	
+
 finallyClause
 	:	FINALLY^ block
 	;
-	
+
 checkedStatement
 	:	CHECKED^ block
 	;
-	
+
 uncheckedStatement
 	:	UNCHECKED^ block
 	;
-	
+
 lockStatement
 	:	LOCK^ OPEN_PAREN! expression CLOSE_PAREN! embeddedStatement
 	;
-	
+
 usingStatement
 	:	USING^ OPEN_PAREN! resourceAcquisition CLOSE_PAREN! embeddedStatement
 	;
-	
+
 unsafeStatement
 	:	UNSAFE^ block
 	;
@@ -984,7 +983,7 @@ resourceAcquisition
 	|	( type identifier )=> localVariableDeclaration
 	|	expression
 	;
-	
+
 compilationUnit
 	:	justPreprocessorDirectives
 		usingDirectives
@@ -992,48 +991,46 @@ compilationUnit
 		namespaceMemberDeclarations
 	    EOF!
 	    {
-			## = #( [COMPILATION_UNIT, "COMPILATION_UNIT"], ## ); 
+			## = #( [COMPILATION_UNIT, "COMPILATION_UNIT"], ## );
 		}
 	;
-	
+
 usingDirectives
-	:	(	options { greedy = true; } 
-		:	{ !PPDirectiveIsPredictedByLA(1) }? usingDirective 
-		|	( preprocessorDirective[CodeMaskEnums.UsingDirectives] )=> 
+	:	(	{ !PPDirectiveIsPredictedByLA(1) }? usingDirective
+		|	( preprocessorDirective[CodeMaskEnums.UsingDirectives] )=>
 			preprocessorDirective[CodeMaskEnums.UsingDirectives]
-		)*
-		{	
-			#usingDirectives = #( [USING_DIRECTIVES, "USING_DIRECTIVES"], ## ); 
+		)*                      // greedy
+		{
+			#usingDirectives = #( [USING_DIRECTIVES, "USING_DIRECTIVES"], ## );
 		}
 	;
-	
+
 usingDirective
 	:	u:USING^
 		(	// UsingAliasDirective
 			{ (IdentifierRuleIsPredictedByLA(1) && (LA(2) == ASSIGN)) }? identifier ASSIGN! qualifiedIdentifier SEMI!
-			{	
+			{
 				#u.setType(USING_ALIAS_DIRECTIVE);
 			}
 		|	// UsingNamespaceDirective
 			qualifiedIdentifier SEMI!
-			{	
+			{
 				#u.setType(USING_NAMESPACE_DIRECTIVE);
 			}
 		)
 	;
-		
+
 namespaceMemberDeclarations
-	:	(	options { greedy = true; } 
-		:	{ PPDirectiveIsPredictedByLA(1) }? preprocessorDirective[CodeMaskEnums.NamespaceMemberDeclarations]
-		|	namespaceMemberDeclaration 
-		)*
+	:	(	{ PPDirectiveIsPredictedByLA(1) }? preprocessorDirective[CodeMaskEnums.NamespaceMemberDeclarations]
+		|	namespaceMemberDeclaration
+		)*                      // greedy
 	;
-	
+
 namespaceMemberDeclaration
 	:	namespaceDeclaration
 	|	a:attributes! m:modifiers! typeDeclaration[#a, #m]
 	;
-	
+
 typeDeclaration [AST attribs, AST modifiers]
 	:	classDeclaration[attribs, modifiers]
 	|	structDeclaration[attribs, modifiers]
@@ -1043,16 +1040,17 @@ typeDeclaration [AST attribs, AST modifiers]
 	;
 
 namespaceDeclaration
-	:	NAMESPACE^ qualifiedIdentifier namespaceBody ( options { greedy = true; } : SEMI! )?
+	:	NAMESPACE^ qualifiedIdentifier namespaceBody
+        ( SEMI! )?              // greedy
 	;
-	
+
 namespaceBody
 	:	o:OPEN_CURLY^ { #o.setType(NAMESPACE_BODY); }
-			usingDirectives 
-			namespaceMemberDeclarations 
+			usingDirectives
+			namespaceMemberDeclarations
 		CLOSE_CURLY
 	;
-	
+
 modifiers
 	:	( modifier )*
 		{ #modifiers = #( [MODIFIERS, "MODIFIERS"], #modifiers ); }
@@ -1077,40 +1075,40 @@ modifier
 	;
 
 
-//	
+//
 // A.2.6 Classes
 //
 
 classDeclaration! [AST attribs, AST modifiers]
-	:	cl:CLASS id:identifier ba:classBase bo:classBody ( options { greedy = true; } : SEMI! )?
+	:	cl:CLASS id:identifier ba:classBase bo:classBody
+        ( SEMI! )?              // greedy
 		{ ## = #( #cl, #attribs, #modifiers, #id, #ba, #bo ); }
 	;
-	
+
 classBase
 	:	(	COLON! type ( COMMA! type )*
 		)?
 		{ #classBase = #( [CLASS_BASE, "CLASS_BASE"], #classBase ); }
 	;
-	
+
 classBody
 	:	o:OPEN_CURLY^ { #o.setType(TYPE_BODY); } classMemberDeclarations CLOSE_CURLY
 	;
-	
-classMemberDeclarations		
-	:	(	options { greedy = true; } 
-		:	{ PPDirectiveIsPredictedByLA(1) }? preprocessorDirective[CodeMaskEnums.ClassMemberDeclarations]
-		|	classMemberDeclaration 
-		)*
+
+classMemberDeclarations
+	:	(	{ PPDirectiveIsPredictedByLA(1) }? preprocessorDirective[CodeMaskEnums.ClassMemberDeclarations]
+		|	classMemberDeclaration
+		)*                      // greedy
 		{ ## = #( [MEMBER_LIST, "MEMBER_LIST"], ## ); }
 	;
-	
+
 classMemberDeclaration
 	:	a:attributes! m:modifiers!
 		(	destructorDeclaration[#a, #m]
 		|	typeMemberDeclaration[#a, #m]
 		)
 	;
-	
+
 typeMemberDeclaration [AST attribs, AST modifiers]
 {
 	bool 	IsBinaryOp = false;
@@ -1119,58 +1117,58 @@ typeMemberDeclaration [AST attribs, AST modifiers]
 	:!	// constantDeclaration
 		c:CONST t:type cdecl:constantDeclarators SEMI!
 		{ ## = #( #c, #attribs, #modifiers, #t, #cdecl ); }
-		
+
 	|!	// eventDeclaration
-		ev:EVENT ev_typ:type 
+		ev:EVENT ev_typ:type
 		(	{ IdentifierRuleIsPredictedByLA(1) && (LA(2)==ASSIGN || LA(2)==SEMI ||LA(2)==COMMA) }?
 			ev_v:variableDeclarators SEMI!
 			{ ## = #( #ev, #attribs, #modifiers, #ev_typ, #ev_v ); }
 		|	ev_id:qualifiedIdentifier OPEN_CURLY! ev_e:eventAccessorDeclarations ev_c:CLOSE_CURLY
 			{ ## = #( #ev, #attribs, #modifiers, #ev_typ, #ev_id, #ev_e, #ev_c ); }
 		)
-		
+
 	|!	// constructorDeclaration
-		cd_id:identifier OPEN_PAREN! ( cd_fp:formalParameterList )? CLOSE_PAREN! 
+		cd_id:identifier OPEN_PAREN! ( cd_fp:formalParameterList )? CLOSE_PAREN!
 		( cd_ci:constructorInitializer )? cd_cb:constructorBody
 		{
 			if ( ((ASTNode) modifiers).GetFirstChildOfType(STATIC) == null )
 			{
-				## = #( [CTOR_DECL, "CTOR_DECL"], #attribs, #modifiers, #cd_id, #cd_cb, #cd_fp, #cd_ci ); 
+				## = #( [CTOR_DECL, "CTOR_DECL"], #attribs, #modifiers, #cd_id, #cd_cb, #cd_fp, #cd_ci );
 				##.CopyPositionFrom( #cd_id );
 			}
 			else
 			{
-				## = #( [STATIC_CTOR_DECL, "STATIC_CTOR_DECL"], #attribs, #modifiers, #cd_id, #cd_cb ); 
+				## = #( [STATIC_CTOR_DECL, "STATIC_CTOR_DECL"], #attribs, #modifiers, #cd_id, #cd_cb );
 				##.CopyPositionFrom( #cd_id );
 			}
 		}
 
 	|!	// methodDeclaration
-		{ ((LA(1) == VOID) && (LA(2) != STAR)) }? 
-		mdv_rt:voidAsType mdv_mn:qualifiedIdentifier mdv_opn:OPEN_PAREN! ( mdv_fp:formalParameterList )? CLOSE_PAREN! 
+		{ ((LA(1) == VOID) && (LA(2) != STAR)) }?
+		mdv_rt:voidAsType mdv_mn:qualifiedIdentifier mdv_opn:OPEN_PAREN! ( mdv_fp:formalParameterList )? CLOSE_PAREN!
 		mdv_mb:methodBody
 		{
-			## = #( [METHOD_DECL, "METHOD_DECL"], #attribs, #modifiers, #mdv_rt, #mdv_mn, #mdv_mb, #mdv_fp ); 
+			## = #( [METHOD_DECL, "METHOD_DECL"], #attribs, #modifiers, #mdv_rt, #mdv_mn, #mdv_mb, #mdv_fp );
 		  	##.CopyPositionFrom( #mdv_mn );
 		}
-		
+
 	|!	typ1:type
 		(	// unaryOperatorDeclarator or binaryOperatorDeclarator
-			OPERATOR! od_op:overloadableOperator OPEN_PAREN! 	
-				od_f1:fixedOperatorParameter 
-				(	COMMA! od_f2:fixedOperatorParameter 
-					{ IsBinaryOp = true; } 
+			OPERATOR! od_op:overloadableOperator OPEN_PAREN!
+				od_f1:fixedOperatorParameter
+				(	COMMA! od_f2:fixedOperatorParameter
+					{ IsBinaryOp = true; }
 				)?
 				{ OpParams = #( [FORMAL_PARAMETER_LIST, "FORMAL_PARAMETER_LIST"], #od_f1, #od_f2 ); }
 			CLOSE_PAREN!
 			{
 				if (!IsBinaryOp)
 				{
-					if (#od_op.Type == PLUS) 
+					if (#od_op.Type == PLUS)
 						#od_op.Type = UNARY_PLUS;
 					else if (#od_op.Type == MINUS)
 						#od_op.Type = UNARY_MINUS;
-						
+
 					## = #( [UNARY_OP_DECL, "UNARY_OP_DECL"], #attribs, #modifiers, #typ1, #od_op, OpParams );
 				}
 				else
@@ -1187,24 +1185,24 @@ typeMemberDeclaration [AST attribs, AST modifiers]
 			fd_v:variableDeclarators SEMI!
 			{ ## = #( [FIELD_DECL, "FIELD_DECL"], #attribs, #modifiers, #typ1, #fd_v ); }
 		|	qid1:qualifiedIdentifier
-		
+
 			(	// propertyDeclaration
 				OPEN_CURLY!
-					pd_a:accessorDeclarations 
+					pd_a:accessorDeclarations
 				pd_c:CLOSE_CURLY
 				{
 					## = #( [PROPERTY_DECL, "PROPERTY_DECL"], #attribs, #modifiers, #typ1, #qid1, #pd_a, #pd_c );
 					##.CopyPositionFrom( #qid1 );
 				}
-				
+
 			|	// methodDeclaration
-				OPEN_PAREN! ( md_fp:formalParameterList )? CLOSE_PAREN! 
+				OPEN_PAREN! ( md_fp:formalParameterList )? CLOSE_PAREN!
 				md_mb:methodBody
 				{
-					## = #( [METHOD_DECL, "METHOD_DECL"], #attribs, #modifiers, #typ1, #qid1, #md_mb, #md_fp ); 
+					## = #( [METHOD_DECL, "METHOD_DECL"], #attribs, #modifiers, #typ1, #qid1, #md_mb, #md_fp );
 				  	##.CopyPositionFrom( #qid1 );
 				}
-				
+
 			|	// indexerDeclaration
 				DOT! ixq_t:THIS OPEN_BRACK! ixq_fp:formalParameterList CLOSE_BRACK!
 				OPEN_CURLY! ixq_adecls:accessorDeclarations ixq_c:CLOSE_CURLY
@@ -1213,7 +1211,7 @@ typeMemberDeclaration [AST attribs, AST modifiers]
 					##.CopyPositionFrom( #ixq_t );
 				}
 			)
-			
+
 		|	// indexerDeclaration
 			ix_t:THIS OPEN_BRACK! ix_fp:formalParameterList CLOSE_BRACK!
 			OPEN_CURLY! ix_adecls:accessorDeclarations ix_c:CLOSE_CURLY
@@ -1222,7 +1220,7 @@ typeMemberDeclaration [AST attribs, AST modifiers]
 				##.CopyPositionFrom( #ix_t );
 			}
 		)
-	
+
 	|!	imp:IMPLICIT OPERATOR! imp_typ1:type OPEN_PAREN! imp_params:oneOperatorParameter CLOSE_PAREN!		// conversionOperatorDeclarator
 		{
 			## = #( [CONV_OP_DECL, "CONV_OP_DECL"], #attribs, #modifiers, #imp, #imp_typ1, #imp_params );
@@ -1241,21 +1239,21 @@ typeMemberDeclaration [AST attribs, AST modifiers]
 
 	|	typeDeclaration[attribs, modifiers]
 	;
-	
+
 variableDeclarators
 	:	variableDeclarator
-		( 
+		(
 			COMMA! variableDeclarator
 		)*
 	;
-	
+
 variableDeclarator
 	:	identifier ( ASSIGN! variableInitializer )?
 		{
-			## = #( [VAR_DECLARATOR, "VAR_DECLARATOR"], ## ); 
+			## = #( [VAR_DECLARATOR, "VAR_DECLARATOR"], ## );
 		}
 	;
-	
+
 variableInitializer
 	:	(	expression
 		|	arrayInitializer
@@ -1263,16 +1261,16 @@ variableInitializer
 		)
 		{ #variableInitializer = #( [VAR_INIT, "VAR_INIT"], #variableInitializer ); }
 	;
-		
+
 returnType
 	:	{ ((LA(1) == VOID) && (LA(2) != STAR)) }? voidAsType
 	|	type
 	;
-	
+
 methodBody
 	:	b:body
 	;
-	
+
 formalParameterList
 	:	fa:attributes!
 		(	fixedParameters[#fa] ( COMMA! pa:attributes! parameterArray[#pa] )?
@@ -1280,79 +1278,80 @@ formalParameterList
 		)
 		{ ## = #( [FORMAL_PARAMETER_LIST, "FORMAL_PARAMETER_LIST"], ## ); }
 	;
-	
+
 fixedParameters [AST attribs]
-	:	fixedParameter[attribs] ( options { greedy = true; } : COMMA! a:attributes! fixedParameter[#a] )*
+	:	fixedParameter[attribs]
+        ( COMMA! a:attributes! fixedParameter[#a] )* // greedy
 	;
-	
+
 fixedParameter! [AST attribs]
 	:	( mod:parameterModifier )? typ:type id:identifier
 		{
-			## = #( [PARAMETER_FIXED, "PARAMETER_FIXED"], #attribs, #typ, #id, #mod ); 
+			## = #( [PARAMETER_FIXED, "PARAMETER_FIXED"], #attribs, #typ, #id, #mod );
 		  	##.CopyPositionFrom( #id );
 		}
 	;
-	
+
 parameterModifier
 	:	REF
 	|	OUT
 	;
-	
+
 parameterArray! [AST attribs]
 //	:	PARAMS! arrayType identifier
 	:	p:PARAMS t:type id:identifier
 		{ ## = #( #p, #attribs, #t, #id ); }
 	;
-	
+
 accessorDeclarations!
 	:	a1:attributes
 		(	g1:getAccessorDeclaration[#a1] 						{ ## = #g1; }
-			( a2:attributes s1:setAccessorDeclaration[#a2]		{ #g1.setNextSibling(#s1); 
-			 													  #s1.setPreviousSibling(#g1); } 
+			( a2:attributes s1:setAccessorDeclaration[#a2]		{ #g1.setNextSibling(#s1);
+			 													  #s1.setPreviousSibling(#g1); }
 			)?
 		|	s2:setAccessorDeclaration[#a1] 					  	{ ## = #s2; }
-			( a3:attributes g2:getAccessorDeclaration[#a3] 		{ #s2.setNextSibling(#g2); 
+			( a3:attributes g2:getAccessorDeclaration[#a3] 		{ #s2.setNextSibling(#g2);
 																  #g2.setPreviousSibling(#s2); }
 			)?
 		)
 	;
-	
+
 getAccessorDeclaration! [AST attribs]
 	:	g:"get" abody:accessorBody
 		{ ## = #( #g, #attribs, #abody ); }
 	;
-	
+
 setAccessorDeclaration! [AST attribs]
 	:	s:"set" abody:accessorBody
 		{ ## = #( #s, #attribs, #abody ); }
 	;
-	
+
 accessorBody
 	:	body
 	;
-	
+
 eventAccessorDeclarations!
 	:	a1:attributes
 		(	add1:addAccessorDeclaration[#a1]    a2:attributes rem1:removeAccessorDeclaration[#a2]
 			{
 				## = #add1;
-			  	#add1.setNextSibling(#rem1); 
-			  	#rem1.setPreviousSibling(#add1); 
+			  	#add1.setNextSibling(#rem1);
+			  	#rem1.setPreviousSibling(#add1);
 			}
 		|	rem2:removeAccessorDeclaration[#a1] a3:attributes add2:addAccessorDeclaration[#a3]
 			{
 				## = #add2;
 			  	#add2.setNextSibling(#rem2);
-			  	#rem2.setPreviousSibling(#add2); 
+			  	#rem2.setPreviousSibling(#add2);
 			}
 		)
 	;
-	
+
 addAccessorDeclaration! [AST attribs]
 	:	a:"add" b:block
 		{ ## = #( #a, #attribs, #b ); }
 	;
-	
+
 removeAccessorDeclaration! [AST attribs]
 	:	r:"remove" b:block
 		{ ## = #( #r, #attribs, #b ); }
@@ -1363,7 +1362,7 @@ overloadableOperator
 		//
 	:	PLUS
 	|	MINUS
-	
+
 		// Unary-only Operators
 		//
 	|	LOG_NOT
@@ -1375,35 +1374,35 @@ overloadableOperator
 
 		// Binary-only Operators
 		//
-	|	STAR 
-	|	DIV 
-	|	MOD 
-	|	BIN_AND 
-	|	BIN_OR 
-	|	BIN_XOR 
-	|	SHIFTL 
-	|	SHIFTR 
-	|	EQUAL 
-	|	NOT_EQUAL 
+	|	STAR
+	|	DIV
+	|	MOD
+	|	BIN_AND
+	|	BIN_OR
+	|	BIN_XOR
+	|	SHIFTL
+	|	SHIFTR
+	|	EQUAL
+	|	NOT_EQUAL
 	|	GTHAN
-	|	LTHAN 
-	|	GTE 
-	|	LTE 
+	|	LTHAN
+	|	GTE
+	|	LTE
 	;
-	
+
 oneOperatorParameter
 	:	fixedOperatorParameter
 		{ ## = #( [FORMAL_PARAMETER_LIST, "FORMAL_PARAMETER_LIST"], ## ); }
 	;
-	
+
 fixedOperatorParameter!
 	:	typ:type id:identifier
 		{
-			## = #( [PARAMETER_FIXED, "PARAMETER_FIXED"], [ATTRIBUTE_SECTIONS, "ATTRIBUTE_SECTIONS"], #typ, #id ); 
+			## = #( [PARAMETER_FIXED, "PARAMETER_FIXED"], [ATTRIBUTE_SECTIONS, "ATTRIBUTE_SECTIONS"], #typ, #id );
 			##.CopyPositionFrom( #id );
 		}
 	;
-	
+
 operatorBody
 	:	b:body
 	;
@@ -1414,7 +1413,7 @@ constructorInitializer
 		|	THIS^ OPEN_PAREN! ( argumentList )? CLOSE_PAREN!
 		)
 	;
-	
+
 constructorBody
 	:	b:body
 	;
@@ -1422,47 +1421,47 @@ constructorBody
 destructorDeclaration! [AST attribs, AST modifiers]
 	:	b:BIN_NOT! id:identifier OPEN_PAREN! CLOSE_PAREN! dbody:destructorBody
 		{
-			## = #( [DTOR_DECL, "DTOR_DECL"], #attribs, #modifiers, #id, #dbody ); 
+			## = #( [DTOR_DECL, "DTOR_DECL"], #attribs, #modifiers, #id, #dbody );
 			##.CopyPositionFrom( #id );
 		}
 	;
-	
+
 destructorBody
 	:	b:body
 	;
 
-	
+
 //
 // A.2.7 Structs
 //
 
 structDeclaration! [AST attribs, AST modifiers]
-	:	st:STRUCT^ id:identifier si:structInterfaces sb:structBody ( options { greedy = true; } : SEMI! )?
+	:	st:STRUCT^ id:identifier si:structInterfaces sb:structBody
+        ( SEMI! )? // greedy
 		{ ## = #( #st, #attribs, #modifiers, #id, #si, #sb ); }
 	;
-	
+
 structInterfaces
 	:	( COLON! type ( COMMA! type )* )?
 		{ ## = #( [STRUCT_BASE, "STRUCT_BASE"], #structInterfaces ); }
 	;
-	
+
 structBody
 	:	o:OPEN_CURLY^ { #o.setType(TYPE_BODY); } structMemberDeclarations CLOSE_CURLY
 ;
-	
+
 structMemberDeclarations
-	:	(	options { greedy = true; } 
-		:	{ PPDirectiveIsPredictedByLA(1) }? preprocessorDirective[CodeMaskEnums.StructMemberDeclarations]
+	:	(	{ PPDirectiveIsPredictedByLA(1) }? preprocessorDirective[CodeMaskEnums.StructMemberDeclarations]
 		|	structMemberDeclaration
-		)*
+		)*                      // greedy
 		{ ## = #( [MEMBER_LIST, "MEMBER_LIST"], ## ); }
 	;
-	
+
 structMemberDeclaration
 	:	a:attributes! m:modifiers! typeMemberDeclaration[#a, #m]
 	;
 
-	
+
 //
 // A.2.8 Arrays
 //
@@ -1470,7 +1469,7 @@ structMemberDeclaration
 nonArrayType
 	:	type
 	;
-	
+
 rankSpecifiers
 	:	// CONFLICT:	ANTLR says this about this line:
 		//						ECMA-CSharp.g:1295: warning: nondeterminism upon
@@ -1478,114 +1477,117 @@ rankSpecifiers
 		//						ECMA-CSharp.g:1295: 	k==2:COMMA,CLOSE_BRACK
 		//						ECMA-CSharp.g:1295: 	between alt 1 and exit branch of block
 		//						!FIXME! -- if possible, can't see the problem right now.
-		(	options { greedy = true; } : rankSpecifier )*
+		( rankSpecifier )* // greedy
 		//( rankSpecifier )+
 		{ #rankSpecifiers = #( [ARRAY_RANKS, "ARRAY_RANKS"], #rankSpecifiers ); }
 	;
-	
+
 rankSpecifier
-	:	o:OPEN_BRACK^ { #o.setType(ARRAY_RANK); } ( options { greedy = true; } : COMMA )* CLOSE_BRACK!
+	:	o:OPEN_BRACK^ { #o.setType(ARRAY_RANK); }
+        ( COMMA )* // greedy
+        CLOSE_BRACK!
 	;
-	
+
 arrayInitializer
 	:	o:OPEN_CURLY^					{ #o.setType(ARRAY_INIT); }
 		(	CLOSE_CURLY
 		|	variableInitializerList (COMMA!)? CLOSE_CURLY
 		)
 	;
-	
+
 variableInitializerList
-	:	variableInitializer ( options { greedy = true; } : COMMA! variableInitializer )*
+	:	variableInitializer
+        ( COMMA! variableInitializer )* // greedy
 		{ #variableInitializerList = #( [VAR_INIT_LIST, "VAR_INIT_LIST"], #variableInitializerList ); }
 	;
 
-	
-// 
+
+//
 // A.2.9 Interfaces
 //
 
 interfaceDeclaration! [AST attribs, AST modifiers]
-	:	iface:INTERFACE id:identifier ibase:interfaceBase ibody:interfaceBody ( options { greedy = true; } : SEMI! )?
+	:	iface:INTERFACE id:identifier ibase:interfaceBase ibody:interfaceBody
+        ( SEMI! )? // greedy
 		{ ## = #( #iface, #attribs, #modifiers, #id, #ibase, #ibody );  }
 	;
-	
+
 interfaceBase
 	:	( COLON! type ( COMMA! type )* )?
 		{ ## = #( [INTERFACE_BASE, "INTERFACE_BASE"], #interfaceBase ); }
 	;
-	
+
 interfaceBody
 	:	o:OPEN_CURLY^ { #o.setType(TYPE_BODY); } interfaceMemberDeclarations CLOSE_CURLY
 	;
-	
+
 interfaceMemberDeclarations
-	:	(	options { greedy = true; } 
-		:	{ PPDirectiveIsPredictedByLA(1) }? preprocessorDirective[CodeMaskEnums.InterfaceMemberDeclarations]
+	:	(	{ PPDirectiveIsPredictedByLA(1) }? preprocessorDirective[CodeMaskEnums.InterfaceMemberDeclarations]
 		|	interfaceMemberDeclaration
-		)*
+		)*                      // greedy
 		{ ## = #( [MEMBER_LIST, "MEMBER_LIST"], ## ); }
 	;
-	
+
 interfaceMemberDeclaration
 {
 	ASTNode modifiers = #[MODIFIERS, "MODIFIERS"];
 }
-	:	attribs:attributes! ( n:NEW! { modifiers.addChildEx(#n); } )? 	
+	:	attribs:attributes! ( n:NEW! { modifiers.addChildEx(#n); } )?
 		(!	// interfaceMethodDeclaration
 			{ ((LA(1) == VOID) && (LA(2) != STAR)) }?
-			im1_rt:voidAsType im1_id:identifier OPEN_PAREN! ( im1_fp:formalParameterList )? CLOSE_PAREN! 
+			im1_rt:voidAsType im1_id:identifier OPEN_PAREN! ( im1_fp:formalParameterList )? CLOSE_PAREN!
 			im1_s:SEMI { #im1_s.setType(EMPTY_STMT); }
 			{
-				## = #( [METHOD_DECL, "METHOD_DECL"], #attribs, #modifiers, #im1_rt, #im1_id, #im1_s, #im1_fp ); 
+				## = #( [METHOD_DECL, "METHOD_DECL"], #attribs, #modifiers, #im1_rt, #im1_id, #im1_s, #im1_fp );
 				##.CopyPositionFrom( #im1_id );
 			}
 
-		|!	typ1:type 
+		|!	typ1:type
 			(	// interfaceIndexerDeclaration
-				ix_t:THIS OPEN_BRACK! ix_fp:formalParameterList CLOSE_BRACK! 
+				ix_t:THIS OPEN_BRACK! ix_fp:formalParameterList CLOSE_BRACK!
 				OPEN_CURLY! ix_acc:interfaceAccessors ix_c:CLOSE_CURLY
 				{
-					## = #( [INDEXER_DECL, "INDEXER_DECL"], #attribs, #modifiers, #typ1, #ix_t, #ix_fp, #ix_acc, #ix_c ); 
+					## = #( [INDEXER_DECL, "INDEXER_DECL"], #attribs, #modifiers, #typ1, #ix_t, #ix_fp, #ix_acc, #ix_c );
 					##.CopyPositionFrom( #ix_t );
 				}
-				
+
 			|	id1:identifier
 				(	// interfaceMethodDeclaration
 					OPEN_PAREN! ( im2_fp:formalParameterList )? CLOSE_PAREN! im2_s:SEMI { #im2_s.setType(EMPTY_STMT); }
 					{
-						## = #( [METHOD_DECL, "METHOD_DECL"], #attribs, #modifiers, #typ1, #id1, #im2_s, #im2_fp ); 
+						## = #( [METHOD_DECL, "METHOD_DECL"], #attribs, #modifiers, #typ1, #id1, #im2_s, #im2_fp );
 						##.CopyPositionFrom( #id1 );
 					}
-					
+
 				|	// interfacePropertyDeclaration
 					OPEN_CURLY! ip_acc:interfaceAccessors ip_c:CLOSE_CURLY
 					{
-						## = #( [PROPERTY_DECL, "PROPERTY_DECL"], #attribs, #modifiers, #typ1, #id1, #ip_acc, #ip_c ); 
+						## = #( [PROPERTY_DECL, "PROPERTY_DECL"], #attribs, #modifiers, #typ1, #id1, #ip_acc, #ip_c );
 						##.CopyPositionFrom( #id1 );
 					}
 				)
 			)
-			
+
 		|	// interfaceEventDeclaration
 			ev:EVENT ev_typ:type ev_id:identifier SEMI!
 			{ ## = #( #ev, #attribs, #modifiers, #ev_typ, #( [VAR_DECLARATOR, "VAR_DECLARATOR"], #ev_id ) ); }
 		)
 	;
-	
+
 
 interfaceAccessors!
 	:	a1:attributes
 		(	g1:getAccessorDeclaration[#a1] 						{ ## = #g1; }
-			( a2:attributes s1:setAccessorDeclaration[#a2]		{ #g1.setNextSibling(#s1); 
-																  #s1.setPreviousSibling(#g1); } 
+			( a2:attributes s1:setAccessorDeclaration[#a2]		{ #g1.setNextSibling(#s1);
+																  #s1.setPreviousSibling(#g1); }
 			)?
 		|	s2:setAccessorDeclaration[#a1] 					  	{ ## = #s2; }
 			( a3:attributes g2:getAccessorDeclaration[#a3] 		{ #s2.setNextSibling(#g2);
-																  #g2.setPreviousSibling(#s2); } 
+																  #g2.setPreviousSibling(#s2); }
 			)?
 		)
 	;
-	
+
 
 
 //
@@ -1593,19 +1595,20 @@ interfaceAccessors!
 //
 
 enumDeclaration! [AST attribs, AST modifiers]
-	:	en:ENUM id:identifier ebase:enumBase ebody:enumBody ( options { greedy = true; } : SEMI! )?
+	:	en:ENUM id:identifier ebase:enumBase ebody:enumBody
+        ( SEMI! )? // greedy
 		{ ## = #( #en, #attribs, #modifiers, #id, #ebase, #ebody ); }
 	;
-	
+
 enumBase!
 	{
-		bool empty = true; 
+		bool empty = true;
 	}
 	:	( c:COLON { #c.setType(ENUM_BASE); empty = false; } t:integralType )?
 		{
 			if (empty)
 			{
-				## = #[ENUM_BASE, "ENUM_BASE"]; 
+				## = #[ENUM_BASE, "ENUM_BASE"];
 			}
 			else
 			{
@@ -1613,19 +1616,17 @@ enumBase!
 			}
 		}
 	;
-	
+
 enumBody
 	:	o:OPEN_CURLY^ { #o.setType(TYPE_BODY); } ( enumMemberDeclarations ( COMMA! )? )? CLOSE_CURLY
 	;
-	
+
 enumMemberDeclarations
-	:	a1:attributes! enumMemberDeclaration[#a1] 
-		(	options { greedy = true; } : 
-			COMMA! a2:attributes! enumMemberDeclaration[#a2] 
-		)*
+	:	a1:attributes! enumMemberDeclaration[#a1]
+		( COMMA! a2:attributes! enumMemberDeclaration[#a2] )* // greedy
 		{ ## = #( [MEMBER_LIST, "MEMBER_LIST"], ## ); }
  	;
- 	
+
 enumMemberDeclaration! [AST attribs]
 	:	id:identifier ( ASSIGN! cexpr:constantExpression )?
 		{ ## = #( #id, #attribs, #cexpr ); }
@@ -1637,53 +1638,51 @@ enumMemberDeclaration! [AST attribs]
 //
 
 delegateDeclaration! [AST attribs, AST modifiers]
-	{ 
-			AST typ = null; 
+	{
+			AST typ = null;
 		}
-	:	dlg:DELEGATE 
-		( 	{ ((LA(1) == VOID) && IdentifierRuleIsPredictedByLA(2)) }? 
+	:	dlg:DELEGATE
+		( 	{ ((LA(1) == VOID) && IdentifierRuleIsPredictedByLA(2)) }?
 			typ1:voidAsType						{ typ = #typ1; }
 		| 	typ2:type 							{ typ = #typ2; }
-		) 
+		)
 		id:identifier OPEN_PAREN! ( fp:formalParameterList )? CLOSE_PAREN! SEMI!
 		{ ## = #( #dlg, #attribs, #modifiers, #typ, #id, #fp ); }
 	;
-	
+
 
 //
 // A.2.12 Attributes
 //
 
 globalAttributes
-	:	(	options { greedy = true; } 
-		:	{ !PPDirectiveIsPredictedByLA(1) }? globalAttributeSection
+	:	(	{ !PPDirectiveIsPredictedByLA(1) }? globalAttributeSection
 		|	( preprocessorDirective[CodeMaskEnums.GlobalAttributes] )=>
 			preprocessorDirective[CodeMaskEnums.GlobalAttributes]
-		)*
+		)*                      // greedy
 		{ #globalAttributes = #( [GLOBAL_ATTRIBUTE_SECTIONS, "GLOBAL_ATTRIBUTE_SECTIONS"], #globalAttributes ); }
 	;
-	
+
 globalAttributeSection
-	:	o:OPEN_BRACK^ { #o.setType(GLOBAL_ATTRIBUTE_SECTION); } 
-			"assembly"! COLON! attributeList ( COMMA! )? 
+	:	o:OPEN_BRACK^ { #o.setType(GLOBAL_ATTRIBUTE_SECTION); }
+			"assembly"! COLON! attributeList ( COMMA! )?
 		CLOSE_BRACK!
 	;
 
 attributes
-	:	(	options { greedy = true; } 
-		:	{ !PPDirectiveIsPredictedByLA(1) }? attributeSection 
+	:	(	{ !PPDirectiveIsPredictedByLA(1) }? attributeSection
 		|	( preprocessorDirective[CodeMaskEnums.Attributes] )=>
 			preprocessorDirective[CodeMaskEnums.Attributes]
-		)*
+		)*                      // greedy
 		{ #attributes = #( [ATTRIBUTE_SECTIONS, "ATTRIBUTE_SECTIONS"], #attributes ); }
 	;
-	
+
 attributeSection
-	:	o:OPEN_BRACK^ { #o.setType(ATTRIBUTE_SECTION); } 
-			( attributeTarget COLON! )? attributeList ( COMMA! )? 
+	:	o:OPEN_BRACK^ { #o.setType(ATTRIBUTE_SECTION); }
+			( attributeTarget COLON! )? attributeList ( COMMA! )?
 		CLOSE_BRACK!
 	;
-	
+
 attributeTarget
 	:	"field"
 	|	EVENT
@@ -1696,14 +1695,15 @@ attributeTarget
 	;
 
 attributeList
-	:	attribute ( options { greedy = true; } : COMMA! attribute )*
+	:	attribute
+        ( COMMA! attribute )* // greedy
 	;
-	
+
 attribute
 	:	( predefinedTypeName | qualifiedIdentifier ) ( attributeArguments )?
 		{ #attribute = #( [ATTRIBUTE, "ATTRIBUTE"], #attribute ); }
 	;
-	
+
 attributeArguments
 	:	OPEN_PAREN!
 		(	CLOSE_PAREN!
@@ -1711,34 +1711,34 @@ attributeArguments
 		|	positionalArgumentList ( COMMA! namedArgumentList )? CLOSE_PAREN!
 		)
 	;
-	
+
 positionalArgumentList
-	:	positionalArgument 
+	:	positionalArgument
 		(	// CONFLICT: ANTLR thinks this is ambiguous, because
 			//           in rule 'attributeArguments' a COMMA also
-			//				 separates positionalArgument & namedArgument. 
+			//				 separates positionalArgument & namedArgument.
 			//           !FIXME! if possible.
-			options { greedy = true; }
-			:	COMMA! positionalArgument 
-		)*
+            // therefore greedy
+			COMMA! positionalArgument
+		)*                      // greedy
 		{ #positionalArgumentList = #( [POSITIONAL_ARGLIST, "POSITIONAL_ARGLIST"], #positionalArgumentList ); }
 	;
-	
+
 positionalArgument
 	:	attributeArgumentExpression
 		{ #positionalArgument = #( [POSITIONAL_ARG, "POSITIONAL_ARG"], #positionalArgument ); }
 	;
-	
+
 namedArgumentList
 	:	namedArgument ( COMMA! namedArgument )*
 		{ #namedArgumentList = #( [NAMED_ARGLIST, "NAMED_ARGLIST"], #namedArgumentList ); }
 	;
-	
+
 namedArgument
 	:	identifier ASSIGN! attributeArgumentExpression
 		{ #namedArgument = #( [NAMED_ARG, "NAMED_ARG"], #namedArgument ); }
 	;
-	
+
 attributeArgumentExpression
 	:	expression
 		{ #attributeArgumentExpression = #( [ATTRIB_ARGUMENT_EXPR, "ATTRIB_ARGUMENT_EXPR"], #attributeArgumentExpression ); }
@@ -1746,46 +1746,45 @@ attributeArgumentExpression
 
 //
 // A.3 Grammar extensions for unsafe code
-// 
+//
 
 fixedStatement
 //	:	FIXED^ OPEN_PAREN! pointerType fixedPointerDeclarators CLOSE_PAREN! embeddedStatement
 	:	FIXED^ OPEN_PAREN! type        fixedPointerDeclarators CLOSE_PAREN! embeddedStatement
 	;
-	
+
 fixedPointerDeclarators
 	:	fixedPointerDeclarator ( COMMA! fixedPointerDeclarator )*
 	;
-	
+
 fixedPointerDeclarator
 	:	identifier ASSIGN! fixedPointerInitializer
 		{ ## = #( [PTR_DECLARATOR, "PTR_DECLARATOR"], ## ); }
 	;
-	
+
 fixedPointerInitializer
 	:	expression
 		{ ## = #( [PTR_INIT, "PTR_INIT"], ## ); }
-	;	
-	
+	;
+
 stackallocInitializer
 	:	STACKALLOC^ qualifiedIdentifier OPEN_BRACK! expression CLOSE_BRACK!
 	;
 
 //
 // A.1.10 Pre-processing directives
-// 
+//
 
 justPreprocessorDirectives
-	:	(	options { greedy = true; } 
-		:	{ SingleLinePPDirectiveIsPredictedByLA(1) }? singleLinePreprocessorDirective
-		|	( preprocessorDirective[CodeMaskEnums.PreprocessorDirectivesOnly] )=> 
+	:	(	{ SingleLinePPDirectiveIsPredictedByLA(1) }? singleLinePreprocessorDirective
+		|	( preprocessorDirective[CodeMaskEnums.PreprocessorDirectivesOnly] )=>
 			preprocessorDirective[CodeMaskEnums.PreprocessorDirectivesOnly]
-		)*
-		{	
-			## = #( [PP_DIRECTIVES, "PP_DIRECTIVES"], ## ); 
+		)*                      // greedy
+		{
+			## = #( [PP_DIRECTIVES, "PP_DIRECTIVES"], ## );
 		}
 	;
-	
+
 preprocessorDirective [CodeMaskEnums codeMask]
 	:	PP_DEFINE^   PP_IDENT
 	|	PP_UNDEFINE^ PP_IDENT
@@ -1795,7 +1794,7 @@ preprocessorDirective [CodeMaskEnums codeMask]
 	|	regionDirective[codeMask]
 	|	conditionalDirective[codeMask]
 	;
-	
+
 singleLinePreprocessorDirective
 	:	PP_DEFINE^   PP_IDENT
 	|	PP_UNDEFINE^ PP_IDENT
@@ -1803,7 +1802,7 @@ singleLinePreprocessorDirective
 	|	PP_ERROR^   ppMessage
 	|	PP_WARNING^ ppMessage
 	;
-	
+
 lineDirective
 	:	PP_LINE^
 		(	DEFAULT
@@ -1814,9 +1813,9 @@ lineDirective
 regionDirective! [CodeMaskEnums codeMask]
 	:	reg:PP_REGION^ msg1:ppMessage						{ #reg.addChildEx(#msg1); }
 		drtv:directiveBlock[codeMask]						{ #reg.addChildEx(#drtv); }
-		
+
 		endreg:PP_ENDREGION msg2:ppMessage 				{
-																		#endreg.addChildEx(#msg2); 
+																		#endreg.addChildEx(#msg2);
 																		#reg.addChildEx(#endreg);
 																	}
 																	{ ## = #reg; }
@@ -1825,25 +1824,24 @@ regionDirective! [CodeMaskEnums codeMask]
 conditionalDirective! [CodeMaskEnums codeMask]
 	:	hashIF:PP_COND_IF^ exprIF:preprocessExpression				{ #hashIF.addChildEx(#exprIF); }
 		drtvIF:directiveBlock[codeMask]									{ #hashIF.addChildEx(#drtvIF); }
-		
+
 		(	hashELIF:PP_COND_ELIF exprELIF:preprocessExpression	{ #hashELIF.addChildEx(#exprELIF); }
 			drtvELIF:directiveBlock[codeMask]							{ #hashELIF.addChildEx(#drtvELIF); }
 																					{ #hashIF.addChildEx(#hashELIF); }
 		)*
-		
+
 		(	hashELSE:PP_COND_ELSE
 			drtvELSE:directiveBlock[codeMask]							{ #hashELSE.addChildEx(#drtvELSE); }
 																					{ #hashIF.addChildEx(#hashELSE); }
 		)?
-		
+
 		hashENDIF:PP_COND_ENDIF												{ #hashIF.addChildEx(#hashENDIF); }
 																					{ ## = #hashIF; }
 	;
 
 directiveBlock  [CodeMaskEnums codeMask]
-	:	
-		(	options { greedy = true; } 
-		:	preprocessorDirective[codeMask]
+	:
+		(	preprocessorDirective[codeMask]
 		|	{ NotExcluded(codeMask, CodeMaskEnums.UsingDirectives) }? 				usingDirective
 		|	{ NotExcluded(codeMask, CodeMaskEnums.GlobalAttributes) }? 				globalAttributeSection
 		|	{ NotExcluded(codeMask, CodeMaskEnums.Attributes) }? 					attributeSection
@@ -1852,16 +1850,16 @@ directiveBlock  [CodeMaskEnums codeMask]
 		|	{ NotExcluded(codeMask, CodeMaskEnums.StructMemberDeclarations) }? 		structMemberDeclaration
 		|	{ NotExcluded(codeMask, CodeMaskEnums.InterfaceMemberDeclarations) }? 	interfaceMemberDeclaration
 		|	{ NotExcluded(codeMask, CodeMaskEnums.Statements) }? 					statement
-		)*
+		)*                      // greedy
 		{ ## = #( [PP_BLOCK, "PP_BLOCK"], ## ); }
 	;
-	
+
 ppMessage
 	:	( PP_IDENT | PP_STRING | PP_FILENAME | PP_NUMBER )*
 		{ ## = #( [PP_MESSAGE, "PP_MESSAGE"], ## ); }
 	;
-	
-	
+
+
 //======================================
 // 14.2.1 Operator precedence and associativity
 //
@@ -1875,7 +1873,7 @@ ppMessage
 //
 // NOTE: In accordance with lessons gleaned from the "java.g" file supplied with ANTLR, I have
 //       applied the following pattern to the rules for expressions:
-// 
+//
 //           thisLevelExpression :
 //               nextHigherPrecedenceExpression (OPERATOR nextHigherPrecedenceExpression)*
 //
@@ -1893,11 +1891,11 @@ preprocessOrExpression
 preprocessAndExpression
 	:	preprocessEqualityExpression (	LOG_AND^ preprocessEqualityExpression )*
 	;
-	
+
 preprocessEqualityExpression
 	:	preprocessPrimaryExpression ( ( EQUAL^ | NOT_EQUAL^ ) preprocessPrimaryExpression )*
 	;
-	
+
 preprocessPrimaryExpression
 	:	(	id:keywordExceptTrueAndFalse { #id.setType(PP_IDENT); }
 		|	PP_IDENT
@@ -1919,18 +1917,18 @@ keywordExceptTrueAndFalse
 	|	CATCH
 	|	CHAR
 	|	CHECKED  | CLASS    | CONST   | CONTINUE | DECIMAL   | DEFAULT  | DELEGATE
-	|	DO       | DOUBLE   | ELSE    | ENUM     | EVENT     | EXPLICIT | EXTERN    
-	|	FINALLY  | FIXED    | FLOAT   |	FOR      | FOREACH   | GOTO     | IF      
+	|	DO       | DOUBLE   | ELSE    | ENUM     | EVENT     | EXPLICIT | EXTERN
+	|	FINALLY  | FIXED    | FLOAT   |	FOR      | FOREACH   | GOTO     | IF
 	|	IMPLICIT | IN       | INT     | INTERFACE| INTERNAL  | IS       | LOCK
-	|	LONG     | NAMESPACE| NEW     | NULL     | OBJECT    | OPERATOR | OUT	    
-	|	OVERRIDE | PARAMS   | PRIVATE | PROTECTED| PUBLIC    | READONLY       
-	|	REF      | RETURN   | SBYTE   | SEALED   | SHORT     | SIZEOF   | STACKALLOC 
-	|	STATIC   | STRING   | STRUCT  | SWITCH   | THIS      | THROW    | TRY     
-	|	TYPEOF   | UINT     | ULONG   | UNCHECKED| UNSAFE    | USHORT   | USING   
+	|	LONG     | NAMESPACE| NEW     | NULL     | OBJECT    | OPERATOR | OUT
+	|	OVERRIDE | PARAMS   | PRIVATE | PROTECTED| PUBLIC    | READONLY
+	|	REF      | RETURN   | SBYTE   | SEALED   | SHORT     | SIZEOF   | STACKALLOC
+	|	STATIC   | STRING   | STRUCT  | SWITCH   | THIS      | THROW    | TRY
+	|	TYPEOF   | UINT     | ULONG   | UNCHECKED| UNSAFE    | USHORT   | USING
 	|	VIRTUAL  | VOID     | VOLATILE| WHILE
 	;
 
 voidAsType!
-	:	v:VOID 		
+	:	v:VOID
 		{ ## =  #( [TYPE, "TYPE"], #v, [STARS, "STARS"], [ARRAY_RANKS, "ARRAY_RANKS"] ); }
 	;

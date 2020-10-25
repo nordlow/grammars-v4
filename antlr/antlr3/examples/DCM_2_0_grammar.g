@@ -256,5 +256,5 @@ Exponent                 : ('e'|'E') ('+'|'-')? ('0'..'9')+
 WS                       : (' '|'\r'|'\t'|'\u000C') {skip();}
                          ;
 
-COMMENT                  : ('*'|'!'|'.') ( options {greedy=false;} : . )* '\n' {skip();}
+COMMENT                  : ('*'|'!'|'.') .*? '\n' {skip();}
                          ;

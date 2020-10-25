@@ -1161,9 +1161,9 @@ WS
 	;
 
 ML_COMMENT
-    :   '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
+    :   '/*' .*? '*/' {$channel=HIDDEN;} // non-greedy
     ;
 
 SL_COMMENT
-    : '//'  ( options {greedy=false;} : . )*  '\r'? '\n' {$channel=HIDDEN;}
+    : '//'  .*?  '\r'? '\n' {$channel=HIDDEN;} // non-greedy
     ;

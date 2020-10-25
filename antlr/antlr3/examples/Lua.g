@@ -1,15 +1,15 @@
 /*
  * Lua 5.1 grammar
- * 
+ *
  * Nicolai Mainiero
  * May 2007
- * 
+ *
  * This is a Lua (http://www.lua.org) grammar for the version 5.1 for ANTLR 3.
  * I tested it with basic and extended examples and it worked fine. It is also used
  * for LunarEclipse (http://lunareclipse.sf.net) a Lua editor based on Eclipse.
- * 
+ *
  * Thanks to Johannes Luber and Gavin Lambert who helped me with some mutually left recursion.
- *  
+ *
  */
 
 grammar Lua;
@@ -22,16 +22,16 @@ chunk : (stat (';')?)* (laststat (';')?)?;
 
 block : chunk;
 
-stat :  varlist1 '=' explist1 | 
-	functioncall | 
-	'do' block 'end' | 
-	'while' exp 'do' block 'end' | 
-	'repeat' block 'until' exp | 
-	'if' exp 'then' block ('elseif' exp 'then' block)* ('else' block)? 'end' | 
-	'for' NAME '=' exp ',' exp (',' exp)? 'do' block 'end' | 
-	'for' namelist 'in' explist1 'do' block 'end' | 
-	'function' funcname funcbody | 
-	'local' 'function' NAME funcbody | 
+stat :  varlist1 '=' explist1 |
+	functioncall |
+	'do' block 'end' |
+	'while' exp 'do' block 'end' |
+	'repeat' block 'until' exp |
+	'if' exp 'then' block ('elseif' exp 'then' block)* ('else' block)? 'end' |
+	'for' NAME '=' exp ',' exp (',' exp)? 'do' block 'end' |
+	'for' namelist 'in' explist1 'do' block 'end' |
+	'function' funcname funcbody |
+	'local' 'function' NAME funcbody |
 	'local' namelist ('=' explist1)? ;
 
 laststat : 'return' (explist1)? | 'break';
@@ -54,7 +54,7 @@ prefixexp: varOrExp nameAndArgs*;
 functioncall: varOrExp nameAndArgs+;
 
 /*
-var :  NAME | prefixexp '[' exp ']' | prefixexp '.' NAME; 
+var :  NAME | prefixexp '[' exp ']' | prefixexp '.' NAME;
 
 prefixexp : var | functioncall | '(' exp ')';
 
@@ -83,8 +83,8 @@ field : '[' exp ']' '=' exp | NAME '=' exp | exp;
 
 fieldsep : ',' | ';';
 
-binop : '+' | '-' | '*' | '/' | '^' | '%' | '..' | 
-		 '<' | '<=' | '>' | '>=' | '==' | '~=' | 
+binop : '+' | '-' | '*' | '/' | '^' | '%' | '..' |
+		 '<' | '<=' | '>' | '>=' | '==' | '~=' |
 		 'and' | 'or';
 
 unop : '-' | 'not' | '#';
@@ -96,7 +96,8 @@ string	: NORMALSTRING | CHARSTRING | LONGSTRING;
 
 // LEXER
 
-NAME	:('a'..'z'|'A'..'Z'|'_')(options{greedy=true;}:	'a'..'z'|'A'..'Z'|'_'|'0'..'9')*
+NAME	:('a'..'z'|'A'..'Z'|'_')
+        ('a'..'z'|'A'..'Z'|'_'|'0'..'9')* // greedy
 	;
 
 INT	: ('0'..'9')+;
@@ -107,10 +108,10 @@ EXP	: (INT| FLOAT) ('E'|'e') ('-')? INT;
 
 HEX	:'0x' ('0'..'9'| 'a'..'f')+ ;
 
-	
+
 
 NORMALSTRING
-    :  '"' ( EscapeSequence | ~('\\'|'"') )* '"' 
+    :  '"' ( EscapeSequence | ~('\\'|'"') )* '"'
     ;
 
 CHARSTRING
@@ -127,34 +128,34 @@ EscapeSequence
     |   UnicodeEscape
     |   OctalEscape
     ;
-    
+
 fragment
 OctalEscape
     :   '\\' ('0'..'3') ('0'..'7') ('0'..'7')
     |   '\\' ('0'..'7') ('0'..'7')
     |   '\\' ('0'..'7')
     ;
-    
+
 fragment
 UnicodeEscape
     :   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
     ;
-    
+
 fragment
 HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 
 COMMENT
-    :   '--[[' ( options {greedy=false;} : . )* ']]' {skip();}
+    :   '--[[' .*? ']]' {skip();} // non-greedy
     ;
-    
+
 LINE_COMMENT
     : '--' ~('\n'|'\r')* '\r'? '\n' {skip();}
     ;
-    
-    
+
+
 WS  :  (' '|'\t'|'\u000C') {skip();}
     ;
-    
+
 NEWLINE	: ('\r')? '\n' {skip();}
 	;

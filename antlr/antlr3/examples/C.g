@@ -539,7 +539,7 @@ WS  :  (' '|'\r'|'\t'|'\u000C'|'\n') {$channel=HIDDEN;}
     ;
 
 COMMENT
-    :   '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
+    :   '/*' .*? '*/' {$channel=HIDDEN;} // non-greedy
     ;
 
 LINE_COMMENT
