@@ -479,7 +479,7 @@ fieldIdentifier
 
 structuredStatement
    : conditionalStatement
-   | repetetiveStatement
+   | repetitiveStatement
    ;
 
 conditionalStatement
@@ -491,7 +491,7 @@ ifStatement
    : IF ifCondition THEN codeBlock? (ELSE codeBlock?)? END IF
    ;
 
-repetetiveStatement
+repetitiveStatement
    : whileStatement
    | forEachStatement
    | forStatement
@@ -1884,7 +1884,7 @@ INTO
    : I N T O
    ;
 
-//SQL & CURSOR 
+//SQL & CURSOR
 
 INT
    : I N T
@@ -2843,10 +2843,10 @@ DOUBLEVERTBAR
 
 //COMMENT_1
 //      :  '{'
-//	    ( 
-//        :   '\r' '\n'       
-//	    |	'\r'			
-//	    |	'\n'			
+//	    (
+//        :   '\r' '\n'
+//	    |	'\r'
+//	    |	'\n'
 //   |   ~('}' | '\n' | '\r')
 //		    )*
 //         '}'
@@ -2911,16 +2911,16 @@ ESC
 		|	('u')+ HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
 		|	'0'..'3'
 			(
-				
+
 			:	'0'..'7'
 				(
-					
+
 				:	'0'..'7'
 				)?
 			)?
 		|	'4'..'7'
 			(
-				
+
 			:	'0'..'7'
 			)?
 		)

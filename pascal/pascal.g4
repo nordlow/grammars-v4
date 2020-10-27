@@ -418,7 +418,7 @@ empty
 structuredStatement
    : compoundStatement
    | conditionalStatement
-   | repetetiveStatement
+   | repetitiveStatement
    | withStatement
    ;
 
@@ -447,7 +447,7 @@ caseListElement
    : constList COLON statement
    ;
 
-repetetiveStatement
+repetitiveStatement
    : whileStatement
    | repeatStatement
    | forStatement
