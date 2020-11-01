@@ -65,6 +65,7 @@ SYMBOL
 
 fragment SYMBOL_START : ('a'..'z') | ('A'..'Z') | '+' | '-' | '*' | '/' | '.' ;
 fragment DIGIT : ('0'..'9') ;
-fragment LPAREN : '(' ;
-fragment RPAREN : ')' ;
-fragment DOT : '.' ;
+
+LPAREN : '(' ;
+RPAREN : ')' ;
+DOT : '.' ;
