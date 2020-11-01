@@ -35,7 +35,7 @@ options {
 @lexer::package {com.arcanearcade.antlr}
 
 sexpr
-    : item* EOF
+    : item* EOF                 // https://stackoverflow.com/questions/17844248/when-is-eof-needed-in-antlr-4
     ;
 item
     : atom
