@@ -69,3 +69,4 @@ fragment DIGIT : ('0'..'9') ;
 LPAREN : '(' ;
 RPAREN : ')' ;
 DOT : '.' ;
+EOF : '\n';
