@@ -31,15 +31,8 @@ options {
    ASTLabelType=CommonTree;
 }
 
-tokens {
-LPAREN='(';
-RPAREN=')';
-DOT;
-}
-
 @package {com.arcanearcade.antlr}
 @lexer::package {com.arcanearcade.antlr}
-
 
 sexpr
     : item* EOF
@@ -70,13 +63,8 @@ SYMBOL
     : SYMBOL_START (SYMBOL_START | DIGIT)*  {if ($text == '.')  $type = DOT;}
     ;
 
-fragment
-SYMBOL_START
-    : ('a'..'z') | ('A'..'Z')
-    | '+' | '-' | '*' | '/'
-    | '.'
-    ;
-fragment
-DIGIT
-    : ('0'..'9')
-    ;
+fragment SYMBOL_START : ('a'..'z') | ('A'..'Z') | '+' | '-' | '*' | '/' | '.' ;
+fragment DIGIT : ('0'..'9') ;
+fragment LPAREN : '(' ;
+fragment RPAREN : ')' ;
+fragment DOT : '.' ;
