@@ -585,7 +585,7 @@ record_definition :
 
 // 3.8
 component_list :
-     component_item ( component_item )*
+     ( component_item )+
    | ( component_item )* variant_part
    | NuLL SEMI
    ;
@@ -608,8 +608,7 @@ discriminant_direct_name : IDENTIFIER ;
 // 3.8.1
 variant_part :
    CASE discriminant_direct_name IS
-      variant
-      ( variant )*
+      ( variant )+
    END CASE SEMI
    ;
 
@@ -1089,7 +1088,7 @@ subpool_specification :  LPAREN subpool_handle_name RPAREN
    ;
 
 // 5.1
-sequence_of_statements :  statement ( statement )* ( label )*
+sequence_of_statements :  ( statement )+ ( label )*
    ;
 
 // 5.1
@@ -2001,8 +2000,7 @@ exception_declaration :
 handled_sequence_of_statements :
    sequence_of_statements
    ( EXCEPTION
-       exception_handler
-    ( exception_handler )* )?
+    ( exception_handler )+ )?
    ;
 
 // 11.2
