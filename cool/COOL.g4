@@ -50,8 +50,8 @@ formal
    : OBJECTID ':' TYPEID
    ;
 /* method argument */
-   
-   
+
+
 expression
    : expression ('@' TYPEID)? '.' OBJECTID '(' (expression (',' expression)*)? ')' # methodCall
    | OBJECTID '(' (expression (',' expression)*)? ')' # ownMethodCall
@@ -80,7 +80,7 @@ expression
    | OBJECTID ASSIGNMENT expression # assignment
    ;
    // key words
-   
+
 CLASS
    : C L A S S
    ;
@@ -157,7 +157,7 @@ TRUE
    : 't' R U E
    ;
    // primitives
-   
+
 STRING
    : '"' (ESC | ~ ["\\])* '"'
    ;
@@ -294,25 +294,16 @@ fragment HEX
    : [0-9a-fA-F]
    ;
    // comments
-   
-OPEN_COMMENT
-   : '(*'
-   ;
-
-CLOSE_COMMENT
-   : '*)'
-   ;
 
 COMMENT
-   : OPEN_COMMENT (COMMENT | .)*? CLOSE_COMMENT -> skip
+   : '(*' (COMMENT | .)*? '*)' -> skip
    ;
 
 ONE_LINE_COMMENT
    : '--' (~ '\n')* '\n'? -> skip
    ;
    // skip spaces, tabs, newlines, note that \v is not suppoted in antlr
-   
+
 WHITESPACE
    : [ \t\r\n\f]+ -> skip
    ;
-
