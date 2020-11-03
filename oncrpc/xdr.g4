@@ -32,8 +32,7 @@ structTypeSpec: 'struct' structBody;
 structBody: '{' (declaration ';') (declaration ';')* '}';
 unionTypeSpec: 'union' unionBody;
 unionBody: 'switch' '(' declaration ')' '{'
-        caseSpec
-        caseSpec*
+        caseSpec+
         ('default' ':' declaration ';')?
     '}';
 caseSpec: ('case' value ':') ('case' value ':')* declaration ';';
