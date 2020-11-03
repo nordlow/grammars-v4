@@ -3,12 +3,10 @@ import xdr;
 
 //oncrpcv2 additions on top of xdr (rfc 5531)
 programDef: 'program' IDENTIFIER '{'
-        versionDef
-        versionDef*
+        versionDef+
     '}' '=' constant ';';
 versionDef: 'version' IDENTIFIER '{'
-        procedureDef
-        procedureDef*
+        procedureDef+
     '}' '=' constant ';';
 procedureDef: procReturn IDENTIFIER '(' procFirstArg (',' typeSpecifier)* ')' '=' constant ';';
 procReturn: 'void' | typeSpecifier;
