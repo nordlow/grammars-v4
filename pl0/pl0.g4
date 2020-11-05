@@ -307,7 +307,7 @@ fragment Z
 
 
 STRING
-   : [a-zA-Z] [a-zA-Z]*
+   : [a-zA-Z]+
    ;
 
 
