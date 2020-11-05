@@ -821,7 +821,7 @@ switchBlockStatementGroup
 	;
 
 switchLabels
-	:	switchLabel switchLabel*
+	:	switchLabel+
 	;
 
 switchLabel
@@ -912,7 +912,7 @@ tryStatement
 	;
 
 catches
-	:	catchClause catchClause*
+	:	catchClause+
 	;
 
 catchClause
@@ -1156,7 +1156,7 @@ arrayCreationExpression
 	;
 
 dimExprs
-	:	dimExpr dimExpr*
+	:	dimExpr+
 	;
 
 dimExpr
