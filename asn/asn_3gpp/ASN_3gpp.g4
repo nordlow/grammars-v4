@@ -82,7 +82,7 @@ symbolsImported : (symbolsFromModuleList )?
 ;
 
 symbolsFromModuleList :
-     (symbolsFromModule) (symbolsFromModule)*
+     (symbolsFromModule)+
 ;
 
 symbolsFromModule : symbolList FROM_LITERAL globalModuleReference
@@ -109,7 +109,7 @@ symbol  : IDENTIFIER ((L_BRACE  R_BRACE))?
 //  identifier
 //;
 
-assignmentList :  (assignment) (assignment)*
+assignmentList :  (assignment)+
 ;
 
 
@@ -487,7 +487,7 @@ builtinValue :
 objectIdentifierValue : L_BRACE /*(definedValue)?*/ objIdComponentsList R_BRACE
 ;
 objIdComponentsList
-	: 	(objIdComponents) (objIdComponents)*
+	: 	(objIdComponents)+
 ;
 objIdComponents  :
 	    	NUMBER
