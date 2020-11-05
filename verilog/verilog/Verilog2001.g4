@@ -305,12 +305,12 @@ output_variable_type
 
 real_type
    : real_identifier ('=' constant_expression)?
-   | real_identifier dimension (dimension)*
+   | real_identifier dimension+
    ;
 
 variable_type
    : variable_identifier ('=' constant_expression)?
-   | variable_identifier dimension (dimension)*
+   | variable_identifier dimension+
    ;
 
 // 2.2.2 Strengths
@@ -363,7 +363,7 @@ delay_value
 
 // 2.3 Declaration lists
 list_of_event_identifiers
-   : event_identifier (dimension (dimension)*)? (',' event_identifier (dimension (dimension)*)?)*
+   : event_identifier dimension* (',' event_identifier (dimension (dimension)*)?)*
    ;
 
 list_of_net_identifiers
