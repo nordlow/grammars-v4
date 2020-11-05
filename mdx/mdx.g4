@@ -175,7 +175,7 @@ case_expression
    ;
 
 when_list
-   : when_clause (when_clause)*
+   : (when_clause)+
    ;
 
 when_clause
