@@ -506,7 +506,7 @@ constantExpression
     ;
 
 apexDbUpsertExpression
-    :   DB_UPSERT expression (expression)*
+    :   DB_UPSERT expression+
     ;
 
 apexDbExpression

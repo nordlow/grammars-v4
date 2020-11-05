@@ -2,16 +2,16 @@ grammar ReStructuredText;
 
 // Copyright (C) 2011 Bart Kiers
 // Copyright (C) 2017 Lex Li
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this
 // software and associated documentation files (the "Software"), to deal in the Software
 // without restriction, including without limitation the rights to use, copy, modify, merge,
 // publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
 // to whom the Software is furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all copies or
 // substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
 // INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
 // PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
@@ -33,7 +33,7 @@ parse
 element
   :  section | sectionElement
   ;
-  
+
 sectionElement
   :  listItemBullet | listItemEnumerated | paragraph | lineBlock | comment
   ;
@@ -41,7 +41,7 @@ sectionElement
 comment
   :  Space* Comment Space* (commentLineNoBreak commentParagraphs?)?
   ;
-  
+
 commentParagraphs
   : main=commentParagraph commentRest
   ;
@@ -97,23 +97,23 @@ listItemBullet
   ;
 
 bulletCrossLine
-  :  LineBreak Space* bullet Space* (paragraph+)? 
+  :  LineBreak Space* bullet Space* (paragraph+)?
   ;
 
-bulletSimple 
-  :  LineBreak Space* bullet Space+ paragraphNoBreak paragraph* 
+bulletSimple
+  :  LineBreak Space* bullet Space+ paragraphNoBreak paragraph*
   ;
 
 bullet
-  :  Star 
-  |  Minus 
+  :  Star
+  |  Minus
   |  Plus
   ;
 
 listItemEnumerated
   :  LineBreak enumerated=lineSpecial Space+ (paragraphNoBreak paragraph*)?
   ;
-  
+
 paragraphNoBreak
   :  lineNoBreak lines*
   ;
@@ -121,7 +121,7 @@ paragraphNoBreak
 lineNoBreak
   :  indentation? spanLineStartNoStar span*?
   ;
-  
+
 lines
   :  linesStar
   |  linesNormal
@@ -130,10 +130,10 @@ lines
 linesNormal
   :  lineNormal (linesStar | linesNormal?)
   ;
-  
+
 linesStar
   :  lineStar
-  |  lineStar lineNoBreak linesNormal??  
+  |  lineStar lineNoBreak linesNormal??
   |  lineStar lineNoBreak linesStar
   ;
 
@@ -141,19 +141,19 @@ lineNormal
   :  LineBreak indentation? spanLineStartNoStar+? (span*? spanNoStar+?)?
   |  lineSpecial
   ;
-  
+
 lineStar
   :  LineBreak indentation? spanLineStartNoStar*? starText
   |  LineBreak indentation? text_fragment+ starText
   ;
- 
+
 lineSpecial
   :  Numbers Dot
   |  LineBreak indentation? Numbers
   |  LineBreak indentation? SectionSeparator (Space+ SectionSeparator) Space* // for table.
   //|  Alphabet Dot
   ;
-  
+
 empty_line
   :  LineBreak Space*
   ;
@@ -176,7 +176,7 @@ spanLineStartNoStar
 textLineStart
   :  lineStart_fragment+ text_fragment*
   ;
-  
+
 lineStart_fragment
   :  (Minus ~(Space | LineBreak | Star))
   |  (Plus ~(Space | Star))
@@ -204,7 +204,7 @@ lineStart_fragment
     |  AngleRight
     |  Any
   ;
-  
+
 text
   :  textStart+ text_fragment*
   ;
@@ -216,10 +216,10 @@ textStart
   |  Space
   ;
 
-forcedText 
-  :  RoundLeft Star RoundRight 
-  |  SquareLeft Star SquareRight 
-  |  QuotationSingle Star QuotationSingle 
+forcedText
+  :  RoundLeft Star RoundRight
+  |  SquareLeft Star SquareRight
+  |  QuotationSingle Star QuotationSingle
   |  QuotationSingle QuotationDouble Star QuotationDouble QuotationSingle
   ;
 
@@ -296,7 +296,7 @@ backTickText
   ;
 
 body
-  :  BackTick BackTick* backTickAtoms BackTick+
+  :  BackTick+ backTickAtoms BackTick+
   |  BackTick backTickNoSpace backTickAtoms BackTick+
   |  BackTick BackTick
   ;
@@ -325,11 +325,11 @@ referenceIn
 hyperlinkTarget
   :  UnderScore Any+
   ;
-  
+
 hyperlink
   :  BackTick hyperlinkAtom+ Space AngleLeft url AngleRight BackTick UnderScore Space
   ;
- 
+
 hyperlinkDoc
   :  ':doc:' BackTick hyperlinkAtom+ Space AngleLeft url AngleRight BackTick
   |  ':doc:' BackTick url BackTick
@@ -338,11 +338,11 @@ hyperlinkDoc
 url
   :  urlAtom+
   ;
-  
+
 urlAtom
   :  ~( LineBreak | BackTick )
   ;
-  
+
 hyperlinkAtom
   :  ~( LineBreak | AngleLeft | AngleRight | BackTick | Star )
   ;
@@ -356,7 +356,7 @@ SectionSeparator
   ;
 
 Literal
-  :  Colon LineBreak LineBreak* Colon Colon
+  :  Colon LineBreak+ Colon Colon
   ;
 
 TimeStar
@@ -367,7 +367,7 @@ TimeStar
 Alphabet
   : [A-Za-z]+
   ;
-  
+
 Numbers
   : [0-9]+
   ;
@@ -387,11 +387,11 @@ SquareRight
 RoundLeft
   :  '('
   ;
-  
+
 RoundRight
   :  ')'
   ;
-  
+
 AngleLeft
   :  '<'
   ;
@@ -403,7 +403,7 @@ AngleRight
 Hat
   :  '^'
   ;
-  
+
 QuotationDouble
   :  '"'
   ;
@@ -415,11 +415,11 @@ QuotationSingle
 Dot
   :  '.'
   ;
-  
+
 SemiColon
   :  ';'
   ;
-  
+
 Colon
   :  ':'
   ;
@@ -458,7 +458,7 @@ Star
   ;
 
 Space
-  :  ' ' 
+  :  ' '
   |  '\t'
   ;
 

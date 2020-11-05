@@ -74,7 +74,7 @@ IINTID
    ;
 
 INTCONST
-   : [0-9] [0-9]*
+   : [0-9]+
    ;
 
 STRCONST
@@ -92,4 +92,3 @@ NL
 WS
    : [ \t\r\n] -> skip
    ;
-

@@ -49,19 +49,19 @@ statement
  | compiler_control_statement ';'? // proper logic with semicolons is not supported yet. compiler_control_statement should be separated with a newline, but not with a semicolon
  ;
 
-// Quote: https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Statements.html#//apple_ref/swift/grammar/statements 
+// Quote: https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Statements.html#//apple_ref/swift/grammar/statements
 // A semicolon (;) can optionally appear after any statement and is used to separate multiple statements if they appear on the same line.
 //
 // Commentary:
 // Swift requires statements to be separated with semicolon or new line.
 // But official grammar has only optional semicolon.
-// It is improtant to break ambiguities in grammar.    
+// It is improtant to break ambiguities in grammar.
 //
 // This logic is implemented in swift in ParseStmt.cpp (Parser::parseBraceItems)
 statements
     : statements_impl[-1]
     ;
-    
+
 statements_impl[int indexBefore]
 locals [
    int indexAfter = -1
@@ -102,7 +102,7 @@ condition
  | case_condition
  | optional_binding_condition
  ;
- 
+
 case_condition : 'case' pattern initializer where_clause? ;
 
 optional_binding_condition
@@ -149,7 +149,7 @@ labeled_statement
  | statement_label switch_statement
  | statement_label do_statement
  ;
- 
+
 statement_label : label_name ':' ;
 label_name : declaration_identifier ;
 
@@ -197,7 +197,7 @@ compiler_control_statement
  : conditional_compilation_block
  | line_control_statement
  ;
- 
+
 // GRAMMAR OF A CONDITIONAL COMPILATION BLOCK
 
 conditional_compilation_block : if_directive_clause elseif_directive_clauses? else_directive_clause? endif_directive ;
@@ -222,19 +222,19 @@ compilation_condition
  | compilation_condition compilation_condition_AND compilation_condition
  | compilation_condition compilation_condition_OR compilation_condition
  ;
- 
+
 platform_condition
  : 'os' '(' operating_system ')'
  | 'arch' '(' architecture ')'
  | 'swift' '(' compilation_condition_GE swift_version ')'
  ;
- 
+
 swift_version : Pure_decimal_digits '.' Pure_decimal_digits ;
 
 // Rule from docs:
 // operating-system → macOS­ | iOS­ | watchOS­ | tvOS
 //
-// Code from apple/swift:­ 
+// Code from apple/swift:­
 // #if (!os(Windows) || CYGWIN) && (arch(i386) || arch(x86_64))
 //
 // "#if os(Any)" gives error that Any is not an identifier.
@@ -256,7 +256,7 @@ architecture : declaration_identifier ;
 //  : '#sourceLocation' '(' 'file:' file_name ',' 'line:' line_number ')'
 //  | '#sourceLocation' '(' ')'
 //  ;
-// 
+//
 // This defines a token "file:", but this is valid for swift compiler:
 // '#sourceLocation(file : "", line : 1)' (notice spaces between "file" and ":")
 //
@@ -410,7 +410,7 @@ typealias_assignment : assignment_operator type ;
 
 // GRAMMAR OF A FUNCTION DECLARATION
 function_declaration : function_head function_name generic_parameter_clause? function_signature generic_where_clause? function_body? ;
- 
+
 function_head : attributes? declaration_modifiers? 'func' ;
 
 function_name : declaration_identifier | operator ;
@@ -419,7 +419,7 @@ function_signature
  : parameter_clause 'throws'? function_result?
  | parameter_clause 'rethrows' function_result?
  ;
- 
+
 function_result : arrow_operator attributes? type ;
 
 function_body : code_block ;
@@ -446,7 +446,7 @@ union_style_enum_members : union_style_enum_member union_style_enum_members? ;
 
 union_style_enum_member
  : declaration
- | union_style_enum_case_clause 
+ | union_style_enum_case_clause
  | compiler_control_statement
  ;
 
@@ -606,7 +606,7 @@ precedence_group_relation
  : 'higherThan' ':' precedence_group_names
  | 'lowerThan' ':' precedence_group_names
  ;
- 
+
 precedence_group_assignment : 'assignment' ':' boolean_literal ;
 
 precedence_group_associativity : 'associativity' ':' associativity ;
@@ -636,7 +636,7 @@ declaration_modifier
  | access_level_modifier
  | mutation_modifier
  ;
- 
+
 declaration_modifiers : declaration_modifier+ ;
 
 access_level_modifier
@@ -646,7 +646,7 @@ access_level_modifier
  | 'public' | 'public' '(' 'set' ')'
  | 'open' | 'open' '(' 'set' ')'
  ;
- 
+
 mutation_modifier : 'mutating' | 'nonmutating' ;
 
 // Patterns
@@ -727,7 +727,7 @@ balanced_token
  | '[' balanced_tokens ']'
  | '{' balanced_tokens '}'
  | label_identifier
- | literal 
+ | literal
  | operator
  | Platform_name_platform_version // there is a kludge, see Platform_name_platform_version; it is a token
  | any_punctuation_for_balanced_token
@@ -821,18 +821,18 @@ array_literal_items
  : array_literal_item ','?
  | array_literal_item ',' array_literal_items
  ;
- 
+
 array_literal_item : expression ;
 
 dictionary_literal
  : '[' dictionary_literal_items ']'
  | '[' ':' ']'
  ;
- 
+
 dictionary_literal_items
  : dictionary_literal_item ','?
  | dictionary_literal_item ',' dictionary_literal_items ;
- 
+
 dictionary_literal_item : expression ':' expression ;
 
 playground_literal
@@ -844,7 +844,7 @@ playground_literal
  | '#fileLiteral' '(' 'resourceName' ':' expression ')'
  | '#imageLiteral' '(' 'resourceName' ':' expression ')'
  ;
- 
+
 // GRAMMAR OF A SELF EXPRESSION
 
 self_expression
@@ -852,7 +852,7 @@ self_expression
  | 'self' '.' declaration_identifier
  | 'self' '[' expression_list ']'
  | 'self' '.' 'init'
- 
+
  // From ParseExpr.cpp. self and Self parsed with same code:
  //
  //  case tok::kw_self:     // self
@@ -939,7 +939,7 @@ tuple_expression
  : '(' ')'
  | '(' tuple_element (',' tuple_element)+ ')'
  ;
- 
+
 tuple_element
  : expression
  | label_identifier ':' expression
@@ -956,7 +956,7 @@ selector_expression
  | '#selector' '(' 'getter:' expression ')'
  | '#selector' '(' 'setter:' expression ')'
  ;
- 
+
 // GRAMMAR OF A KEY-PATH EXPRESSION
 
 key_path_expression : '#keyPath' '(' expression ')' ;
@@ -996,7 +996,7 @@ function_call_argument_clause
  : '(' ')'
  | '(' function_call_argument_list ')'
  ;
- 
+
 function_call_argument_list : function_call_argument ( ',' function_call_argument )* ;
 
 function_call_argument
@@ -1010,7 +1010,7 @@ trailing_closure : closure_expression ;
 
 // GRAMMAR OF AN EXPLICIT MEMBER EXPRESSION
 
-argument_names : argument_name (argument_name)* ;
+argument_names : argument_name+ ;
 argument_name : label_identifier ':' ;
 
 // GRAMMAR OF A DYNAMIC TYPE EXPRESSION
@@ -1057,17 +1057,17 @@ function_type
  : attributes? function_type_argument_clause 'throws'? arrow_operator type
  | attributes? function_type_argument_clause 'rethrows' arrow_operator type
  ;
- 
+
 function_type_argument_clause
  : '(' ')'
  | '(' function_type_argument_list range_operator? ')'
  ;
- 
+
 function_type_argument_list
  : function_type_argument
  | function_type_argument ',' function_type_argument_list
  ;
- 
+
 function_type_argument
  : attributes? 'inout'? type
  | argument_label type_annotation
@@ -1148,7 +1148,7 @@ Identifier
  ;
 
 // identifier_list : identifier (',' identifier)* ;
-// 
+//
 // identifier is context sensitive
 // See: closure_parameter_clause_identifier_list
 
@@ -1190,7 +1190,7 @@ fragment Identifier_characters : Identifier_character+ ;
 //  | 'weak' | 'willSet'
 //
 // ^- this does not work. "[10].index(of: 10)". "of" is a keyword. "type(of: self)"
- 
+
  // Added by myself.
  // Tested all alphanumeric tokens in playground.
  // E.g. "let mutating = 1".

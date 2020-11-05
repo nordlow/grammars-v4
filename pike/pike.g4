@@ -311,12 +311,12 @@ DIGIT
 
 
 FLOAT
-   : DIGIT DIGIT* '.' DIGIT*
+   : DIGIT+ '.' DIGIT*
    ;
 
 
 NUMBER
-   : DIGIT DIGIT* | '0x' DIGIT*
+   : DIGIT+ | '0x' DIGIT*
    ;
 
 

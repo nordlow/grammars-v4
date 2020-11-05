@@ -363,11 +363,11 @@ delay_value
 
 // 2.3 Declaration lists
 list_of_event_identifiers
-   : event_identifier dimension* (',' event_identifier (dimension (dimension)*)?)*
+   : event_identifier dimension* (',' event_identifier (dimension+)?)*
    ;
 
 list_of_net_identifiers
-   : net_identifier (dimension (dimension)*)? (',' net_identifier (dimension (dimension)*)?)*
+   : net_identifier (dimension+)? (',' net_identifier (dimension+)?)*
    ;
 
 list_of_genvar_identifiers
@@ -530,7 +530,7 @@ list_of_block_variable_identifiers
 
 block_variable_type
    : variable_identifier
-   | variable_identifier dimension (dimension)*
+   | variable_identifier dimension+
    ;
 
 // 3 Primitive instances
@@ -734,7 +734,7 @@ generate_conditional_statement
    ;
 
 generate_case_statement
-   : 'case' '(' constant_expression ')' genvar_case_item (genvar_case_item)* 'endcase'
+   : 'case' '(' constant_expression ')' genvar_case_item+ 'endcase'
    ;
 
 genvar_case_item
@@ -989,9 +989,9 @@ function_if_else_if_statement
 
 // 6.7 Case statements
 case_statement
-   : 'case' '(' expression ')' case_item (case_item)* 'endcase'
-   | 'casez' '(' expression ')' case_item (case_item)* 'endcase'
-   | 'casex' '(' expression ')' case_item (case_item)* 'endcase'
+   : 'case' '(' expression ')' case_item+ 'endcase'
+   | 'casez' '(' expression ')' case_item+ 'endcase'
+   | 'casex' '(' expression ')' case_item+ 'endcase'
    ;
 
 case_item
@@ -1000,9 +1000,9 @@ case_item
    ;
 
 function_case_statement
-   : 'case' '(' expression ')' function_case_item (function_case_item)* 'endcase'
-   | 'casez' '(' expression ')' function_case_item (function_case_item)* 'endcase'
-   | 'casex' '(' expression ')' function_case_item (function_case_item)* 'endcase'
+   : 'case' '(' expression ')' function_case_item+ 'endcase'
+   | 'casez' '(' expression ')' function_case_item+ 'endcase'
+   | 'casex' '(' expression ')' function_case_item+ 'endcase'
    ;
 
 function_case_item
@@ -1959,7 +1959,7 @@ Simple_identifier
    ;
 
 Dollar_Identifier
-   : '$' [a-zA-Z0-9_$] [a-zA-Z0-9_$]*
+   : '$' [a-zA-Z0-9_$]+
    ;
 
 

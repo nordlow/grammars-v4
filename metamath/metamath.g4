@@ -66,7 +66,7 @@ variablestmt
    ;
 
 disjointstmt
-   : '$d' variable variable variable* '$.'
+   : '$d' variable variable+ '$.'
    ;
 
 hypothesisstmt
@@ -159,4 +159,3 @@ BLOCK_COMMENT
 WS
    : [ \r\n\t\f]+ -> skip
    ;
-

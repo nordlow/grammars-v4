@@ -254,7 +254,7 @@ ALPHA : [a-zA-Z_] ;
 fragment
 DIGIT : [0-9] ;
 
-Dollar_Identifier : '$' [a-zA-Z0-9_$] [a-zA-Z0-9_$]* ;
+Dollar_Identifier : '$' [a-zA-Z0-9_$]+ ;
 Escaped_identifier : '\\' ~[ \r\t\n]* ;
 Simple_identifier : ALPHA (ALPHA | DIGIT)* ;
 String_literal : '"' (~('"'|'\n'|'\r') | '""')* '"'  ;

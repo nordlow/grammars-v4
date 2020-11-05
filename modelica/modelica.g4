@@ -378,7 +378,7 @@ IDENT
 
 
 fragment Q_IDENT
-   : '\'' (Q_CHAR | S_ESCAPE) (Q_CHAR | S_ESCAPE)* '\''
+   : '\'' (Q_CHAR | S_ESCAPE)+ '\''
    ;
 
 
@@ -413,7 +413,7 @@ fragment DIGIT
 
 
 fragment UNSIGNED_INTEGER
-   : DIGIT (DIGIT)*
+   : DIGIT+
    ;
 
 
