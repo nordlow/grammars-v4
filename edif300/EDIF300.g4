@@ -227,7 +227,7 @@ cellPropertyOverride : '(cellPropertyOverride'
 
 cellRef : '(cellRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 celsius : '(celsius'
@@ -310,7 +310,7 @@ clusterPropertyOverride : '(clusterPropertyOverride'
 
 clusterRef : '(clusterRef'
 	clusterNameRef
-	( cellRef )? 
+	( cellRef )?
 	')';
 
 color : '(color'
@@ -624,7 +624,7 @@ designHierarchy : '(designHierarchy'
 	')';
 
 designHierarchyHeader : '(designHierarchyHeader'
-	(  booleanParameterAssign  |  integerParameterAssign  |  nameInformation | numberParameterAssign  |  property  |  stringParameterAssign  )*	
+	(  booleanParameterAssign  |  integerParameterAssign  |  nameInformation | numberParameterAssign  |  property  |  stringParameterAssign  )*
 	')';
 
 designHierarchyNameCaseSensitive : '(designHierarchyNameCaseSensitive'
@@ -759,7 +759,7 @@ edifHeader : '(edifHeader'
 edifLevel : '(edifLevel'
 	edifLevelValue
 	')';
-	
+
 
 edifLevelValue : integerToken;
 
@@ -1014,7 +1014,7 @@ geometryMacroHeader : '(geometryMacroHeader'
 
 geometryMacroRef : '(geometryMacroRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 geometryMacroUnits : '(geometryMacroUnits'
@@ -1381,7 +1381,7 @@ interconnectPropertyDisplay : '(interconnectPropertyDisplay'
 
 interconnectRef : '(interconnectRef'
 	interconnectNameRef
-	( pageRef )? 
+	( pageRef )?
 	')';
 
 interconnectSet : '(interconnectSet'
@@ -1606,7 +1606,7 @@ loadDelay : '(loadDelay'
 localPortGroup : '(localPortGroup'
 	localPortGroupNameDef
 	portList
-	(  comment  | nameInformation | property  |  userData  )*	
+	(  comment  | nameInformation | property  |  userData  )*
 	')';
 
 localPortGroupNameCaseSensitive : '(localPortGroupNameCaseSensitive'
@@ -1662,7 +1662,7 @@ logicOneOf : '(logicOneOf'
 
 logicRef : '(logicRef'
 	logicNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 logicValue : '(logicValue'
@@ -1683,7 +1683,7 @@ maskLayoutUnits : '(maskLayoutUnits'
 
 maskLayoutView : '(maskLayoutView'
 	viewNameDef
-	(  comment  | nameInformation | userData  )*	
+	(  comment  | nameInformation | userData  )*
 	')';
 
 measured : '(measured'
@@ -1829,7 +1829,7 @@ numerator : integerValue;
 
 occurrenceAnnotate : '(occurrenceAnnotate'
 	( extendInstanceDef | extendInstanceMemberDef )
-	(  cellPropertyOverride  |  clusterPropertyOverride  |  comment | designator |  forFrameAnnotate  |  ifFrameAnnotate  |  instancePropertyOverride  |  interconnectAnnotate  |  leafOccurrenceAnnotate  |  occurrenceAnnotate  |  otherwiseFrameAnnotate  |  pageAnnotate  |  portAnnotate  |  property  |  signalAnnotate  |  signalGroupAnnotate  |  timing  |  viewPropertyOverride  )*	  
+	(  cellPropertyOverride  |  clusterPropertyOverride  |  comment | designator |  forFrameAnnotate  |  ifFrameAnnotate  |  instancePropertyOverride  |  interconnectAnnotate  |  leafOccurrenceAnnotate  |  occurrenceAnnotate  |  otherwiseFrameAnnotate  |  pageAnnotate  |  portAnnotate  |  property  |  signalAnnotate  |  signalGroupAnnotate  |  timing  |  viewPropertyOverride  )*
 	')';
 
 occurrenceHierarchyAnnotate : '(occurrenceHierarchyAnnotate'
@@ -1928,7 +1928,7 @@ pageBorderTemplate : '(pageBorderTemplate'
 
 pageBorderTemplateRef : '(pageBorderTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 pageCommentGraphics : '(pageCommentGraphics'
@@ -1995,7 +1995,7 @@ pageTitleBlockTemplate : '(pageTitleBlockTemplate'
 
 pageTitleBlockTemplateRef : '(pageTitleBlockTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 pageTitleDisplay : '(pageTitleDisplay'
@@ -2409,7 +2409,7 @@ schematicFigureMacro : '(schematicFigureMacro'
 
 schematicFigureMacroRef : '(schematicFigureMacroRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicForFrameBorder : '(schematicForFrameBorder'
@@ -2427,7 +2427,7 @@ schematicForFrameBorderTemplate : '(schematicForFrameBorderTemplate'
 
 schematicForFrameBorderTemplateRef : '(schematicForFrameBorderTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicForFrameImplementation : '(schematicForFrameImplementation'
@@ -2471,7 +2471,7 @@ schematicGlobalPortTemplate : '(schematicGlobalPortTemplate'
 
 schematicGlobalPortTemplateRef : '(schematicGlobalPortTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicIfFrameBorder : '(schematicIfFrameBorder'
@@ -2489,7 +2489,7 @@ schematicIfFrameBorderTemplate : '(schematicIfFrameBorderTemplate'
 
 schematicIfFrameBorderTemplateRef : '(schematicIfFrameBorderTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicIfFrameImplementation : '(schematicIfFrameImplementation'
@@ -2547,7 +2547,7 @@ schematicInterconnectTerminatorTemplate : '(schematicInterconnectTerminatorTempl
 
 schematicInterconnectTerminatorTemplateRef : '(schematicInterconnectTerminatorTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicJunctionImplementation : '(schematicJunctionImplementation'
@@ -2570,7 +2570,7 @@ schematicJunctionTemplate : '(schematicJunctionTemplate'
 
 schematicJunctionTemplateRef : '(schematicJunctionTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicMasterPortImplementation : '(schematicMasterPortImplementation'
@@ -2595,7 +2595,7 @@ schematicMasterPortTemplate : '(schematicMasterPortTemplate'
 
 schematicMasterPortTemplateRef : '(schematicMasterPortTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicMetric : '(schematicMetric'
@@ -2647,7 +2647,7 @@ schematicOffPageConnectorTemplate : '(schematicOffPageConnectorTemplate'
 
 schematicOffPageConnectorTemplateRef : '(schematicOffPageConnectorTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicOnPageConnectorImplementation : '(schematicOnPageConnectorImplementation'
@@ -2670,7 +2670,7 @@ schematicOnPageConnectorTemplate : '(schematicOnPageConnectorTemplate'
 
 schematicOnPageConnectorTemplateRef : '(schematicOnPageConnectorTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicOtherwiseFrameBorder : '(schematicOtherwiseFrameBorder'
@@ -2688,7 +2688,7 @@ schematicOtherwiseFrameBorderTemplate : '(schematicOtherwiseFrameBorderTemplate'
 
 schematicOtherwiseFrameBorderTemplateRef : '(schematicOtherwiseFrameBorderTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicOtherwiseFrameImplementation : '(schematicOtherwiseFrameImplementation'
@@ -2789,7 +2789,7 @@ schematicRipperTemplate : '(schematicRipperTemplate'
 
 schematicRipperTemplateRef : '(schematicRipperTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicSubBus : '(schematicSubBus'
@@ -2839,7 +2839,7 @@ schematicSymbolBorderTemplate : '(schematicSymbolBorderTemplate'
 
 schematicSymbolBorderTemplateRef : '(schematicSymbolBorderTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicSymbolHeader : '(schematicSymbolHeader'
@@ -2870,7 +2870,7 @@ schematicSymbolPortTemplate : '(schematicSymbolPortTemplate'
 
 schematicSymbolPortTemplateRef : '(schematicSymbolPortTemplateRef'
 	libraryObjectNameRef
-	( libraryRef )? 
+	( libraryRef )?
 	')';
 
 schematicSymbolRef : '(schematicSymbolRef'
@@ -3140,7 +3140,7 @@ technology : '(technology'
 	physicalScaling
 	(  comment  |  figureGroup | logicDefinitions |  userData  )*
 	')';
-	
+
 textHeight : '(textHeight'
 	lengthValue
 	')';
@@ -3250,7 +3250,7 @@ unitNameRef : nameRef;
 unitRef : '(unitRef'
 	unitNameRef
 	')';
-	
+
 unrestricted : '(unrestricted'
 	')';
 
@@ -3332,7 +3332,7 @@ viewPropertyOverride : '(viewPropertyOverride'
 
 viewRef : '(viewRef'
 	viewNameRef
-	( clusterRef )? 
+	( clusterRef )?
 	')';
 
 visible : '(visible'
@@ -3404,7 +3404,7 @@ STRING_LITERAL : '"' (~'"')* '"' ;
 DECIMAL_LITERAL : INTEGER ( '.' INTEGER* )? ;
 
 fragment
-INTEGER : ('-'|'+')? DIG (DIG)* ;
+INTEGER : ('-'|'+')? (DIG)+ ;
 fragment
 LETTER : UPCASE |LOWCASE ;
 fragment
@@ -3417,6 +3417,6 @@ fragment
 UNDERLINE : '_';
 fragment
 SPECIAL: '!' | '#' | '$' | '&'| '*'| '+' | ',' | '-' | '.' | '/' | ':' | ';' |
-'<' | '=' | '>' | '?' | '@' | '[' | ']'| '^' | '`' | '{' | '|' | '}' | '~'| '\\' ; 
+'<' | '=' | '>' | '?' | '@' | '[' | ']'| '^' | '`' | '{' | '|' | '}' | '~'| '\\' ;
 
 WS : [ \t\r\n]+ -> skip;

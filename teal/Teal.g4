@@ -151,7 +151,7 @@ varOrExp
 
 // we rename `var` to `variable` because of keyword `var`
 variable
-    : (NAME | '(' exp ')' varSuffix) varSuffix*
+    : NAME | '(' exp ')' varSuffix+
     ;
 
 varSuffix
@@ -345,4 +345,3 @@ WS
 SHEBANG
     : '#' '!' ~('\n'|'\r')* -> channel(HIDDEN)
     ;
-

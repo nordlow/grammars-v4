@@ -33,7 +33,7 @@ channels { OFF_CHANNEL }
 
 tokens {
     DOC_COMMENT,
-    PARSER,	
+    PARSER,
     LEXER,
     RULE,
     BLOCK,
@@ -94,7 +94,7 @@ CHAR_LITERAL
    ;
 
 STRING_LITERAL
-   : '\'' LITERAL_CHAR LITERAL_CHAR* '\''
+   : '\'' LITERAL_CHAR+ '\'' // TODO: this seems incorrect because this makes STRING_LITERAL and CHAR_LITERAL both match `'X'`
    ;
 
 fragment LITERAL_CHAR
@@ -177,7 +177,7 @@ TREE : 'tree' ;
 fragment WS_LOOP : (WS | SL_COMMENT | ML_COMMENT)* ;
 
 //// =================================
- 
+
 AT : At ;
 BANG : '!' ;
 COLON : Colon ;
@@ -571,7 +571,7 @@ TOK_CL
    ;
 
 TOK_SL
-   : '\'' LITERAL_CHAR LITERAL_CHAR* '\'' -> type(STRING_LITERAL)
+   : '\'' LITERAL_CHAR+ '\'' -> type(STRING_LITERAL) // TODO: this seems incorrect because this makes TOK_SL and TOK_CL both match `'X'`
    ;
 
 TOK_SEMI
@@ -604,4 +604,3 @@ UNTERMINATED_CHAR_SET
 fragment Id
    : NameStartChar NameChar*
    ;
-

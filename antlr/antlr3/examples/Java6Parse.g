@@ -914,9 +914,7 @@ trystatement
      ;
 
 catches
-    :   catchClause
-        (catchClause
-        )*
+    :   catchClause+
     ;
 
 catchClause

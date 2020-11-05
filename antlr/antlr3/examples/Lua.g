@@ -47,7 +47,7 @@ explist1 : (exp ',')* exp;
 
 exp :  ('nil' | 'false' | 'true' | number | string | '...' | function | prefixexp | tableconstructor | unop exp) (binop exp)* ;
 
-var: (NAME | '(' exp ')' varSuffix) varSuffix*;
+var: NAME | '(' exp ')' varSuffix+;
 
 prefixexp: varOrExp nameAndArgs*;
 

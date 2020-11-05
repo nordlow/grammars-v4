@@ -1,6 +1,6 @@
 /*
     This file is the grammar for the nesC of the TinyOS.
-    
+
     This grammar is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -43,7 +43,7 @@ qualifiedName
 //Move the character '|' if you want to read in just single file
 
 componentDeclaration
-: moduleDeclaration 
+: moduleDeclaration
 | configurationDeclaration
 ;
 
@@ -53,7 +53,7 @@ moduleDeclaration
 : moduleSignature  moduleImplementation
 ;
 moduleSignature
-: MODULE moduleName '('? ')'?  moduleSignatureBody 
+: MODULE moduleName '('? ')'?  moduleSignatureBody
 ;
 
 moduleName
@@ -71,12 +71,12 @@ usesOrProvides
 
 usesState
 : USES INTERFACE usesInterfaceDescription* ';'
-| USES '{' (INTERFACE usesInterfaceDescription ';')* '}' 
+| USES '{' (INTERFACE usesInterfaceDescription ';')* '}'
 ;
 
 providesState
 : PROVIDES INTERFACE providesInterfaceDescription* ';'
-| PROVIDES '{' (INTERFACE providesInterfaceDescription ';')* '}' 
+| PROVIDES '{' (INTERFACE providesInterfaceDescription ';')* '}'
 ;
 
 usesInterfaceDescription
@@ -90,7 +90,7 @@ providesInterfaceDescription
 
 interfaceNameAs
 : interfaceName AS interfaceName
-;	
+;
 
 interfaceName
 : singleLine
@@ -109,20 +109,20 @@ block
 ;
 
 stat
-: statement               
-| event_stat             
-| task_stat               
-| static_stat             
-| if_stat                
-| enum_stat              
-| while_stat             
+: statement
+| event_stat
+| task_stat
+| static_stat
+| if_stat
+| enum_stat
+| while_stat
 | for_stat
-| switch_stat              
+| switch_stat
 | other_stat
 | atomic_stat
 | define_stat
 | call_stat
-| packet_define     
+| packet_define
 | OTHER {System.err.println("unknown char: " + $OTHER.text);}
 ;
 
@@ -149,11 +149,11 @@ statement
 
 event_stat
 : EVENT VOID? common_name event_condition_block event_stat_block?
-| EVENT VOID? common_name event_condition_block event_stat_block? ( stat )* (EVENT VOID? common_name event_stat_block)?  
+| EVENT VOID? common_name event_condition_block event_stat_block? ( stat )* (EVENT VOID? common_name event_stat_block)?
 ;
 
 event_condition_block
-: OPAR expr? CPAR 
+: OPAR expr? CPAR
 ;
 
 event_stat_block
@@ -166,7 +166,7 @@ task_stat
 ;
 
 task_condition_block
-: OPAR expr? CPAR SCOL? 
+: OPAR expr? CPAR SCOL?
 ;
 
 task_stat_block
@@ -179,7 +179,7 @@ static_stat
 ;
 
 static_condition_block
-: OPAR expr? CPAR SCOL? 
+: OPAR expr? CPAR SCOL?
 ;
 
 static_stat_block
@@ -206,14 +206,14 @@ enum_stat
 
 common_name
 : singleLine
-| name_or_reserved 
+| name_or_reserved
 ;
 
 if_stat
 : IF if_condition_block (ELSE IF if_condition_block)* (ELSE if_stat_block)?
 ;
 
-if_condition_block 
+if_condition_block
 : OPAR (name_or_reserved* | expr*)? CPAR if_stat_block
 | OPAR expr CPAR if_stat_block
 | OPAR symbol CPAR if_stat_block
@@ -275,7 +275,7 @@ expr
 | expr op=(EQ | NEQ) expr              #equalityExpr
 | expr AND expr                        #andExpr
 | expr OR expr                         #orExpr
-| atom (atom)*                         #atomExpr
+| atom+                                #atomExpr
 | singleLine                           #singlelineExpr
 | singleDoubleArray                    #singleDoubleArrayExpr
 ;
@@ -316,15 +316,15 @@ reservedwords
 
 singleLine
 : (atom | symbol | chars ) ('.'? (atom | symbol | chars))*
-| (atom | symbol | chars | reservedwords) (atom | symbol | chars | reservedwords)*
+| (atom | symbol | chars | reservedwords)+
 ;
 
 anystatement
-: (atom | symbol | chars ) (atom | symbol | chars )*
+: (atom | symbol | chars )+
 ;
 
 name_or_reserved
-: (atom | symbol | chars | reservedwords ) (atom | symbol | chars | reservedwords )*
+: (atom | symbol | chars | reservedwords )+
 ;
 
 name_with_char
