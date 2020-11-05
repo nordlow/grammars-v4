@@ -138,7 +138,7 @@ varOrExp
     ;
 
 var
-    : (NAME | '(' exp ')' varSuffix) varSuffix*
+    : NAME | '(' exp ')' varSuffix+
     ;
 
 varSuffix
