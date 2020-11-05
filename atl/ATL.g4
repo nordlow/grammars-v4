@@ -481,7 +481,7 @@ fragment DecimalNumeral
 
 
 fragment Digits
-   : Digit Digit*
+   : Digit+
    ;
 
 
@@ -531,7 +531,7 @@ fragment FloatTypeSuffix
 
 
 IDENTIFIER
-   : LetterOrDigit LetterOrDigit*
+   : LetterOrDigit+
    ;
 
 
