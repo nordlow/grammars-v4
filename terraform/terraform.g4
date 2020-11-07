@@ -140,7 +140,7 @@ val
    ;
 
 functioncall
-   : functionname LPAREN functionarguments RPAREN
+   : functionname LPAREN functionarguments? RPAREN
    ;
 
 functionname
@@ -148,8 +148,7 @@ functionname
    ;
 
 functionarguments
-   : //no arguments
-   | expression (',' expression)*
+   : expression (',' expression)*
    ;
 
 index
