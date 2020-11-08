@@ -105,16 +105,16 @@ fragment Year: Digit Digit Digit Digit;
 fragment Month: [0][0-9]|[1][0-2];
 fragment Day: [0-2][0-9]|[0-3][01];
 
-fragment FullTime 
+fragment FullTime
     : PartialTime TimeOffset;
 fragment TimeOffset
     : 'Z' | TimeNumOffset;
-fragment TimeNumOffset 
+fragment TimeNumOffset
     : '-' [01][0-2] (':' (HalfHour))?
     | '+' [01][0-5] (':' (HalfHour | [4][5]))?
     ;
 fragment HalfHour: [0][0] | [3][0];
-fragment PartialTime 
+fragment PartialTime
     : [0-2][0-3] ':' Sixty ':' Sixty ('.' [0-9]*)?;
 fragment Sixty: [0-5] Digit;
 fragment Digit: [0-9];
