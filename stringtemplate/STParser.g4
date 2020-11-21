@@ -176,3 +176,4 @@ namedArg
 	: ID EQUALS expr
 	;
 
+TEXT : . ;
