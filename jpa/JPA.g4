@@ -456,4 +456,6 @@ ESCAPE_CHARACTER
 WS
    : [ \t\r\n] -> skip
    ;
-   
+
+TRIM_CHARACTER
+	:' '	;
