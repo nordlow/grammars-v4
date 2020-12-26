@@ -67,6 +67,8 @@ create table table_with_visible_index (id int, data varchar(50), UNIQUE INDEX `d
 create table table_with_index (id int, data varchar(50), UNIQUE INDEX `data_UNIQUE` (`data` ASC));
 create table blob_test(id int, col1 blob(45));
 create table žluťoučký (kůň int);
+create table column_names_as_aggr_funcs(min varchar(100), max varchar(100), sum varchar(100), count varchar(100));
+CREATE TABLE char_table (c1 CHAR VARYING(10), c2 CHARACTER VARYING(10), c3 NCHAR VARYING(10));
 #end
 #begin
 -- Rename table
@@ -261,6 +263,9 @@ CREATE TABLE `tab1` (
   mi MIDDLEINT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 #end
+-- Comments
+-- SELECT V_PAYABLE_AMT, DIS_ADJUST_TOTAL_PAYABLE;
+--	SELECT V_PAYABLE_AMT, DIS_ADJUST_TOTAL_PAYABLE;
 #begin
 -- Create procedure
 -- The default value for local variables in a DECLARE statement should be an expression
