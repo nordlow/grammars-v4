@@ -1874,7 +1874,7 @@ signalConditionInformation
           | TABLE_NAME
           | COLUMN_NAME
           | CURSOR_NAME
-        ) '=' ( stringLiteral | DECIMAL_LITERAL )
+        ) '=' ( stringLiteral | DECIMAL_LITERAL | mysqlVariable | simpleId )
     ;
 
 diagnosticsStatement
@@ -2160,7 +2160,7 @@ userVariables
 //    Common Expressons
 
 defaultValue
-    : (NULL_LITERAL | unaryOperator? constant | currentTimestamp) (ON UPDATE currentTimestamp)?
+    : (NULL_LITERAL | unaryOperator? constant | currentTimestamp | '(' expression ')') (ON UPDATE currentTimestamp)?
     ;
 
 currentTimestamp
@@ -2196,7 +2196,7 @@ specificFunction
     : (
       CURRENT_DATE | CURRENT_TIME | CURRENT_TIMESTAMP
       | CURRENT_USER | LOCALTIME
-      )                                                             #simpleFunctionCall
+      ) ('(' ')')?                                                  #simpleFunctionCall
     | CONVERT '(' expression separator=',' convertedDataType ')'    #dataTypeFunctionCall
     | CONVERT '(' expression USING charsetName ')'                  #dataTypeFunctionCall
     | CAST '(' expression AS convertedDataType ')'                  #dataTypeFunctionCall

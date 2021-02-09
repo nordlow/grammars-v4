@@ -25,6 +25,10 @@
 					</includes>
 					<visitor>true</visitor>
 					<listener>true</listener>
+					<arguments>
+					  <argument>-package</argument>
+					  <argument>org.antlr.grammars</argument>
+					</arguments>
 				</configuration>
 				<executions>
 					<execution>
@@ -43,7 +47,7 @@
 					<showTree>false</showTree>
 					<grammarName>Kotlin</grammarName>
 					<caseInsensitive>true</caseInsensitive>
-					<packageName></packageName>
+					<packageName>org.antlr.grammars</packageName>
 				</configuration>
 				<executions>
 					<execution>
