@@ -70,6 +70,13 @@ DIV             : '/';
 MINUS           : '-';
 PERC            : '%';
 
+// When a variable or parenthesized statement is negated, there cannot be a
+// space after the - or +.
+MINUS_DOLLAR    : MINUS DOLLAR;
+PLUS_DOLLAR     : PLUS DOLLAR;
+MINUS_LPAREN    : MINUS LPAREN;
+PLUS_LPAREN     : PLUS LPAREN;
+
 
 UrlStart
   : 'url' LPAREN -> pushMode(URL_STARTED)
@@ -100,15 +107,17 @@ INCLUDE         : '@include';
 IMPORT          : '@import';
 RETURN          : '@return';
 MEDIA           : '@media';
+CONTENT         : '@content';
 
 FROM            : 'from';
+TO              : 'to';
 THROUGH         : 'through';
 POUND_DEFAULT   : '!default';
 IMPORTANT       : '!important';
 ONLY            : 'only';
 NOT             : 'not';
 AND_WORD        : 'and';
-
+USING           : 'using';
 
 Identifier
 	:	(('_' | 'a'..'z'| 'A'..'Z' | '\u0100'..'\ufffe' )
@@ -117,7 +126,13 @@ Identifier
 		('_' | '-' | 'a'..'z'| 'A'..'Z' | '\u0100'..'\ufffe' | '0'..'9')*) -> pushMode(IDENTIFY)
 	;
 
+PseudoIdentifier
+  : COLON COLON? Identifier -> pushMode(IDENTIFY)
+  ;
 
+FunctionIdentifier
+    : Identifier LPAREN
+    ;
 
 fragment STRING
   	:	'"' (~('"'|'\n'|'\r'))* '"'
@@ -184,3 +199,4 @@ SEMI_ID                   : SEMI -> popMode, type(SEMI);
 EQ_ID                     : EQ -> popMode, type(EQ);
 PIPE_EQ_ID                : PIPE_EQ -> popMode, type(PIPE_EQ);
 TILD_EQ_ID                : TILD_EQ -> popMode, type(TILD_EQ);
+PseudoIdentifier_ID       : PseudoIdentifier -> popMode, type(PseudoIdentifier);
