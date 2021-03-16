@@ -17,7 +17,7 @@ MINUS : '-' ;
 TIMES : '*' ;
 DIV : '/' ;
 GT : '>' ;
-LT : '\<' ;
+LT : '\\<' ;
 EQ : '=' ;
 POINT : '.' ;
 POW : '^' ;
