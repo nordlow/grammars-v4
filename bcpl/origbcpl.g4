@@ -1,9 +1,9 @@
 grammar bcpl;
 
 // 8.8.1 Identifier, Strings, Numbers.
-letter : 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z' 
+letter : 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
 // extended
- | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' 
+ | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z'
  ;
 octal_digit : '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' ;
 hex_digit : '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' ;
@@ -24,12 +24,12 @@ name : identifier ;
 address_op : '@' | '!' ;
 mult_op : '*' | '/' | 'REM' ;
 add_op : '+' | '-' ;
-rel_op : '=' | '¬=' | '<=' | '>=' | '<' | '>' ;
+rel_op : '=' | 'ï¿½=' | '<=' | '>=' | '<' | '>' ;
 shift_op : '<<' | '>>' ;
 and_op : '&' ;
 or_op : '|' ;
 eqv_op : 'EQV' | 'NEQV' ;
-not_op : '¬' ;
+not_op : 'ï¿½' ;
 
 // 8.8.3 Expressions
 element : character_constant | string_constant | number | identifier | 'TRUE' | 'FALSE' ;
