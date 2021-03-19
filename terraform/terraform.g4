@@ -140,7 +140,8 @@ val
    ;
 
 functioncall
-   : functionname LPAREN functionarguments? RPAREN
+   : functionname LPAREN functionarguments RPAREN
+   | 'jsonencode' LPAREN (.)*? RPAREN
    ;
 
 functionname
@@ -187,7 +188,7 @@ VARIABLE
 PROVIDER
    : 'provider'
    ;
-   
+
 IN
    : 'in'
    ;
