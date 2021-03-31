@@ -111,7 +111,7 @@ inline_index
 
 expression
    : section
-   | expression operator expression
+   | expression operator_ expression
    | LPAREN expression RPAREN
    | expression '?' expression ':' expression
    | forloop
@@ -128,7 +128,7 @@ section
    ;
 
 val
-   : NULL
+   : NULL_
    | signed_number
    | string
    | identifier
@@ -201,7 +201,7 @@ DOT
    : '.'
    ;
 
-operator
+operator_
    : '/'
    | STAR
    | '%'
@@ -237,7 +237,7 @@ EOF_
    : '<<EOF' .*? 'EOF'
    ;
 
-NULL
+NULL_
    : 'nul'
    ;
 
