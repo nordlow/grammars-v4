@@ -164,4 +164,3 @@ SPACE
 WS
    : [\r\n]+ -> skip
    ;
-

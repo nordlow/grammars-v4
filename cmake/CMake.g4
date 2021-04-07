@@ -14,6 +14,10 @@ file
     : command_invocation* EOF
     ;
 
+file_
+	: command_invocation* EOF
+	;
+
 command_invocation
     : Identifier '(' (single_argument|compound_argument)* ')'
     ;
