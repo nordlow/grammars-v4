@@ -1824,12 +1824,7 @@ output_clause
     ;
 
 output_dml_list_elem
-    : (output_column_name | expression) as_column_alias?  // TODO: scalar_expression
-    ;
-
-output_column_name
-    : (DELETED | INSERTED | table_name) '.' ('*' | id_)
-    | DOLLAR_ACTION
+    : (expression | asterisk) as_column_alias?
     ;
 
 // DDL
@@ -1866,7 +1861,11 @@ create_or_alter_procedure
     : ((CREATE (OR ALTER)?) | ALTER) proc=(PROC | PROCEDURE) procName=func_proc_name_schema (';' DECIMAL)?
       ('('? procedure_param (',' procedure_param)* ')'?)?
       (WITH procedure_option (',' procedure_option)*)?
-      (FOR REPLICATION)? AS sql_clauses*
+      (FOR REPLICATION)? AS (as_external_name | sql_clauses*)
+    ;
+
+as_external_name
+    : EXTERNAL NAME assembly_name = id_ '.' class_name = id_ '.' method_name = id_
     ;
 
 // https://docs.microsoft.com/en-us/sql/t-sql/statements/create-trigger-transact-sql
@@ -2006,8 +2005,22 @@ alter_table
                              | WITH CHECK ADD CONSTRAINT constraint=id_ FOREIGN KEY '(' fk = column_name_list ')' REFERENCES table_name '(' pk = column_name_list')'
                              | CHECK CONSTRAINT constraint=id_
                              | (ENABLE | DISABLE) TRIGGER id_?
-                             | REBUILD table_options)
+                             | REBUILD table_options
+                             | SWITCH switch_partition)
                              ';'?
+    ;
+
+switch_partition
+    : (PARTITION? source_partition_number_expression=expression)?
+      TO target_table=table_name
+      (PARTITION target_partition_number_expression=expression)?
+      (WITH low_priority_lock_wait)?
+    ;
+
+low_priority_lock_wait
+    : WAIT_AT_LOW_PRIORITY '('
+      MAX_DURATION '=' max_duration=time MINUTES? ','
+      ABORT_AFTER_WAIT '=' abort_after_wait=(NONE | SELF | BLOCKERS) ')'
     ;
 
 // https://msdn.microsoft.com/en-us/library/ms174269.aspx
@@ -2895,6 +2908,7 @@ expression
     | expression op=('+' | '-' | '&' | '^' | '|' | '||') expression
     | expression time_zone
     | over_clause
+    | DOLLAR_ACTION
     ;
 
 time_zone
@@ -3091,6 +3105,7 @@ udt_method_arguments
 // https://docs.microsoft.com/ru-ru/sql/t-sql/queries/select-clause-transact-sql
 asterisk
     : (table_name '.')? '*'
+    | (INSERTED | DELETED) '.' '*'
     ;
 
 column_elem
@@ -3589,7 +3604,8 @@ ddl_object
     ;
 
 full_column_name
-    : server=id_? '.' schema=id_? '.' tablename=id_? '.' column_name=id_
+    : (DELETED | INSERTED) '.' column_name=id_
+    | server=id_? '.' schema=id_? '.' tablename=id_? '.' column_name=id_
     | schema=id_? '.' tablename=id_? '.' column_name=id_
     | tablename=id_? '.' column_name=id_
     | column_name=id_
